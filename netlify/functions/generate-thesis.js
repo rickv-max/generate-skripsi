@@ -23,30 +23,33 @@ exports.handler = async (event) => {
       };
     }
 
+    // PROMPT SUPER LENGKAP UNTUK FLASH
     const prompt = `
-PENTING: Permintaan ini adalah untuk tujuan akademik dan penelitian hukum murni. Hasilnya harus netral, objektif, dan fokus pada analisis teoretis dan yuridis. Hindari konten yang dapat ditafsirkan sebagai nasihat hukum atau mempromosikan tindakan berbahaya.
+⚠️ Penting:
+Tugas ini adalah pembuatan **draf skripsi hukum yang lengkap, utuh, dan sesuai kaidah akademik** di Indonesia.
+Hasil harus netral, objektif, dan fokus pada analisis hukum secara yuridis dan teoritis.
+Gunakan bahasa ilmiah yang logis, sistematis, dan mendalam seperti skripsi S1 Fakultas Hukum.
 
-Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
-Tugas Anda adalah membuat draf akademis secara lengkap, utuh, tidak diringkas, dan sesuai struktur formal skripsi hukum di Indonesia.
-Gunakan bahasa akademik yang logis, sistematis, dan formal. Panjang isi tidak dibatasi. Tidak boleh menyingkat, meringkas, atau melewatkan bagian penting.
+JANGAN meringkas, menyingkat, atau membuat daftar poin saja. Buat narasi utuh seperti skripsi cetak.
+Tulis seolah-olah akan diserahkan kepada dosen pembimbing.
 
-Berikan hasil seolah-olah ini akan dikumpulkan ke dosen pembimbing skripsi fakultas hukum. Jangan sertakan catatan, disclaimer, atau penjelasan tambahan di luar isi skripsi.
+📘 Informasi Utama:
+- Topik Skripsi: ${topic}
+- Rumusan Masalah: ${problem}
+- Bab yang diminta: BAB ${chapter.replace('bab', '')}
 
-Topik Skripsi: ${topic}
-Rumusan Masalah: ${problem}
+📌 Struktur:
+Buatlah isi dari BAB ${chapter.replace('bab', '')} yang lengkap, sesuai struktur resmi penulisan skripsi hukum. Gunakan subjudul, paragraf utuh, dan format yang umum dipakai di fakultas hukum.
 
-Tugas Anda: Buatkan draf lengkap untuk BAB ${chapter.replace('bab', '').toUpperCase()} dari skripsi hukum.
-Pastikan sesuai struktur formal akademik di Indonesia.
+Output hanya boleh berupa isi bab — tidak ada disclaimer, penjelasan tambahan, atau catatan sistem.
+
+⛔ Jangan beri tanggapan meta seperti “Berikut ini adalah...”, cukup langsung isi skripsinya.
+
+Mulailah sekarang.
 `;
 
     const requestBody = {
-      contents: [
-        {
-          parts: [
-            { text: prompt }
-          ]
-        }
-      ],
+      contents: [{ parts: [{ text: prompt }] }],
       safetySettings: [
         { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -57,12 +60,11 @@ Pastikan sesuai struktur formal akademik di Indonesia.
         temperature: 0.9,
         topK: 0,
         topP: 0.95,
-        maxOutputTokens: 8192,
-        stopSequences: []
+        maxOutputTokens: 8192
       }
     };
 
-    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
+    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
     const apiResponse = await fetch(apiURL, {
       method: 'POST',
@@ -71,36 +73,21 @@ Pastikan sesuai struktur formal akademik di Indonesia.
     });
 
     const responseData = await apiResponse.json();
+    console.log('📦 RESPONSE DARI GEMINI:', JSON.stringify(responseData, null, 2));
 
-    // ✅ DEBUG LOG: TAMPILKAN SEMUA HASIL RAW
-    console.log('🔍 RESPONSE DATA:', JSON.stringify(responseData, null, 2));
-
-    if (
-      responseData.candidates &&
-      responseData.candidates.length > 0 &&
-      responseData.candidates[0].content?.parts
-    ) {
+    if (responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts) {
       const generatedText = responseData.candidates[0].content.parts[0].text;
       return {
         statusCode: 200,
         body: JSON.stringify({ text: generatedText })
       };
     } else {
-      const reason = responseData.promptFeedback?.blockReason ||
-                     responseData.candidates?.[0]?.finishReason ||
-                     'Unknown reason';
-
+      const reason = responseData.promptFeedback?.blockReason || responseData.candidates?.[0]?.finishReason || 'Unknown reason';
       console.error('⚠️ GAGAL GENERATE DARI GEMINI:', reason);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: `Gemini tidak menghasilkan konten. Alasan: ${reason}`,
-          rawResponse: responseData
-        })
-      };
+      throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
     }
   } catch (error) {
-    console.error('💥 ERROR SERVER:', error.message);
+    console.error('🔥 ERROR UTAMA:', error.message);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message })
