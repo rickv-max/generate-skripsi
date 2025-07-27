@@ -1,76 +1,110 @@
 // netlify/functions/generate-thesis.js
-// Pastikan Anda telah menginstal 'node-fetch' di direktori netlify/functions:
-// cd netlify/functions
-// npm install node-fetch
 
+// Menggunakan node-fetch yang sudah ada di package.json Anda
 const fetch = require('node-fetch');
 
-exports.handler = async function(event, context) {
-    // Hanya izinkan metode POST
+exports.handler = async (event) => {
+    // 1. Hanya izinkan metode POST
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
-    // Ambil kunci API dari environment variable Netlify
+    // 2. Ambil API Key dari environment variables di Netlify
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     if (!GEMINI_API_KEY) {
-        console.error("GEMINI_API_KEY not configured in Netlify Environment Variables.");
-        return { statusCode: 500, body: JSON.stringify({ error: 'Server configuration error: API Key not found.' }) };
-    }
-
-    let prompt;
-    try {
-        // Parse body permintaan dari frontend
-        const body = JSON.parse(event.body);
-        prompt = body.prompt;
-        if (!prompt) {
-            return { statusCode: 400, body: JSON.stringify({ error: 'Missing prompt in request body.' }) };
-        }
-    } catch (parseError) {
-        console.error("Error parsing request body:", parseError);
-        return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON in request body.' }) };
-    }
-
-    let chatHistory = [];
-    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-    const payload = { contents: chatHistory };
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-
-        // Periksa struktur respons dari Gemini API
-        if (result.candidates && result.candidates.length > 0 &&
-            result.candidates[0].content && result.candidates[0].content.parts &&
-            result.candidates[0].content.parts.length > 0) {
-            const generatedText = result.candidates[0].content.parts[0].text;
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ text: generatedText }) // Kirim teks kembali ke frontend
-            };
-        } else if (result.error) {
-            console.error("Gemini API Error Response:", result.error.message);
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: `Gemini API Error: ${result.error.message}` })
-            };
-        } else {
-            console.error("Unexpected Gemini API response structure:", result);
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: 'Unexpected response from Gemini API.' })
-            };
-        }
-    } catch (error) {
-        console.error("Error fetching from Gemini API in function:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: `Failed to connect to Gemini API: ${error.message}` })
+            body: JSON.stringify({ error: 'Konfigurasi server error: GEMINI_API_KEY tidak ditemukan.' }),
         };
     }
-};
+
+    try {
+        // 3. Ambil data terstruktur yang dikirim dari frontend (app.js)
+        const { topic, problem, chapter, details } = JSON.parse(event.body);
+
+        // 4. Bangun prompt (perintah) untuk Gemini berdasarkan bab yang diminta
+        let prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
+        Tugas Anda adalah membuat draf akademis yang sistematis, logis, dan menggunakan bahasa Indonesia yang baik dan benar.
+
+        Konteks Utama:
+        - Topik Skripsi: "${topic}"
+        - Rumusan Masalah Utama: "${problem}"
+
+        Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi berikut:\n\n`;
+
+        // INILAH BAGIAN "OTAK" YANG SEBELUMNYA HILANG
+        switch (chapter) {
+            case 'bab1':
+                prompt += `BAB I - PENDAHULUAN:
+                - Buat sub-bab 1.1 Latar Belakang: Jelaskan mengapa topik "${topic}" ini penting untuk diteliti, kaitkan dengan kondisi ideal (das sollen) dan kondisi nyata (das sein). ${details.latarBelakang ? `Gunakan draf awal ini sebagai inspirasi: "${details.latarBelakang}"` : ''}
+                - Buat sub-bab 1.2 Rumusan Masalah: Ambil dari rumusan masalah utama yang diberikan.
+                - Buat sub-bab 1.3 Tujuan Penelitian: Jabarkan tujuan yang ingin dicapai, harus menjawab rumusan masalah. ${details.tujuanPenelitian ? `Gunakan draf awal ini sebagai inspirasi: "${details.tujuanPenelitian}"` : ''}
+                - Buat sub-bab 1.4 Kontribusi Penelitian: Jelaskan kontribusi teoretis dan praktis dari penelitian ini.`;
+                break;
+            case 'bab2':
+                prompt += `BAB II - TINJAUAN PUSTAKA:
+                - Buat Tinjauan Umum yang menjelaskan konsep-konsep dasar terkait "${topic}".
+                - Buat pembahasan mendalam mengenai teori, asas, dan konsep relevan lainnya. ${details.subtopics ? `Fokus pada sub-topik berikut: ${details.subtopics}.` : ''}`;
+                break;
+            case 'bab3':
+                prompt += `BAB III - METODE PENELITIAN:
+                - Jelaskan metode penelitian hukum yang paling sesuai untuk topik "${topic}".
+                - Buat sub-bab 3.1 Pendekatan Penelitian (disarankan yuridis normatif jika sesuai, atau jelaskan pilihan lain). ${details.pendekatan ? `Gunakan preferensi ini: "${details.pendekatan}"` : ''}
+                - Buat sub-bab 3.2 Jenis Penelitian (misal: deskriptif analitis). ${details.jenis ? `Gunakan preferensi ini: "${details.jenis}"` : ''}
+                - Buat sub-bab 3.3 Jenis dan Sumber Data (data primer, sekunder).
+                - Buat sub-bab 3.4 Metode Pengumpulan Data (studi kepustakaan). ${details.metodePengumpulanData ? `Gunakan preferensi ini: "${details.metodePengumpulanData}"` : ''}
+                - Buat sub-bab 3.5 Model Analisis Data (kualitatif). ${details.modelAnalisis ? `Gunakan preferensi ini: "${details.modelAnalisis}"` : ''}`;
+                break;
+            case 'bab4':
+                prompt += `BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
+                - Buat struktur pembahasan yang logis untuk menjawab rumusan masalah: "${problem}".
+                - Sajikan analisis mendalam yang mengaitkan teori dari Bab II dengan data atau peraturan yang relevan untuk topik "${topic}".
+                - Pastikan pembahasan fokus untuk menjawab setiap aspek dari rumusan masalah.`;
+                break;
+            default:
+                throw new Error('Chapter tidak valid');
+        }
+
+        // 5. Bungkus prompt ke dalam format JSON yang benar sesuai permintaan Gemini
+        const requestBody = {
+            contents: [{
+                parts: [{
+                    text: prompt
+                }]
+            }]
+        };
+
+        // 6. Kirim request ke Gemini API
+        // Menggunakan model gemini-pro yang lebih umum dan stabil
+        const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+        const apiResponse = await fetch(apiURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody),
+        });
+
+        const responseData = await apiResponse.json();
+
+        // 7. Proses respons dari Gemini
+        if (!apiResponse.ok || !responseData.candidates) {
+            const errorMessage = responseData.error ? responseData.error.message : 'Gagal berkomunikasi dengan Gemini API.';
+            throw new Error(errorMessage);
+        }
+        
+        const generatedText = responseData.candidates[0].content.parts[0].text;
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ text: generatedText }),
+        };
+
+    } catch (error) {
+        console.error('Error di dalam Netlify function:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: error.message }),
+        };
+    }
+};```
+
+Setelah Anda mengganti file `generate-thesis.js` Anda dengan kode di atas, simpan, dan deploy ulang, seluruh aplikasi Anda akan berfungsi. Sekarang "pelayan" (frontend) dan "koki" (backend) sudah berbicara dalam bahasa yang sama.
