@@ -34,7 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // BAGIAN 2: Logika untuk Menu Mobile Responsif
     // =================================================
     const toggleMenu = () => {
-        sidebar.classList.toggle('open');
+        // Ini adalah perubahan utamanya.
+        // Kita langsung menukar kelas utilitas dari Tailwind.
+        sidebar.classList.toggle('-translate-x-full');
+        sidebar.classList.toggle('translate-x-0');
+
+        // Bagian ini tetap sama
         sidebarOverlay.classList.toggle('hidden');
         menuOpenIcon.classList.toggle('hidden');
         menuCloseIcon.classList.toggle('hidden');
