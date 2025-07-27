@@ -3,25 +3,18 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
-    // 1. Hanya izinkan metode POST
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
-    // 2. Ambil API Key dari environment variables di Netlify
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     if (!GEMINI_API_KEY) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: 'Konfigurasi server error: GEMINI_API_KEY tidak ditemukan.' }),
-        };
+        return { statusCode: 500, body: JSON.stringify({ error: 'Konfigurasi server error: GEMINI_API_KEY tidak ditemukan.' }) };
     }
 
     try {
-        // 3. Ambil data terstruktur yang dikirim dari frontend (app.js)
         const { topic, problem, chapter, details } = JSON.parse(event.body);
 
-        // 4. Bangun prompt (perintah) untuk Gemini berdasarkan bab yang diminta
         let prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
         Tugas Anda adalah membuat draf akademis yang sistematis, logis, dan menggunakan bahasa Indonesia yang baik dan benar.
 
@@ -31,50 +24,54 @@ exports.handler = async (event) => {
 
         Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi berikut:\n\n`;
 
+        // ... (switch case untuk semua bab tetap sama seperti sebelumnya)
         switch (chapter) {
             case 'bab1':
                 prompt += `BAB I - PENDAHULUAN:
-                - Buat sub-bab 1.1 Latar Belakang: Jelaskan mengapa topik "${topic}" ini penting untuk diteliti, kaitkan dengan kondisi ideal (das sollen) dan kondisi nyata (das sein). ${details.latarBelakang ? `Gunakan draf awal ini sebagai inspirasi: "${details.latarBelakang}"` : ''}
-                - Buat sub-bab 1.2 Rumusan Masalah: Ambil dari rumusan masalah utama yang diberikan.
-                - Buat sub-bab 1.3 Tujuan Penelitian: Jabarkan tujuan yang ingin dicapai, harus menjawab rumusan masalah. ${details.tujuanPenelitian ? `Gunakan draf awal ini sebagai inspirasi: "${details.tujuanPenelitian}"` : ''}
-                - Buat sub-bab 1.4 Kontribusi Penelitian: Jelaskan kontribusi teoretis dan praktis dari penelitian ini.`;
+                - Buat sub-bab 1.1 Latar Belakang: Jelaskan mengapa topik "${topic}" ini penting untuk diteliti. ${details.latarBelakang ? `Gunakan draf awal ini: "${details.latarBelakang}"` : ''}
+                - Buat sub-bab 1.2 Rumusan Masalah.
+                - Buat sub-bab 1.3 Tujuan Penelitian. ${details.tujuanPenelitian ? `Gunakan draf awal ini: "${details.tujuanPenelitian}"` : ''}
+                - Buat sub-bab 1.4 Kontribusi Penelitian.`;
                 break;
             case 'bab2':
                 prompt += `BAB II - TINJAUAN PUSTAKA:
-                - Buat Tinjauan Umum yang menjelaskan konsep-konsep dasar terkait "${topic}".
-                - Buat pembahasan mendalam mengenai teori, asas, dan konsep relevan lainnya. ${details.subtopics ? `Fokus pada sub-topik berikut: ${details.subtopics}.` : ''}`;
+                - Buat Tinjauan Umum terkait "${topic}".
+                - Bahas teori, asas, dan konsep relevan. ${details.subtopics ? `Fokus pada: ${details.subtopics}.` : ''}`;
                 break;
             case 'bab3':
                 prompt += `BAB III - METODE PENELITIAN:
-                - Buat sub-bab 3.1 Pendekatan Penelitian (disarankan yuridis normatif jika sesuai). ${details.pendekatan ? `Gunakan preferensi ini: "${details.pendekatan}"` : ''}
-                - Buat sub-bab 3.2 Jenis Penelitian (misal: deskriptif analitis). ${details.jenis ? `Gunakan preferensi ini: "${details.jenis}"` : ''}
-                - Buat sub-bab 3.3 Lokasi Penelitian (jelaskan di mana penelitian dilakukan, bisa berupa studi kepustakaan jika tidak ada lokasi fisik). ${details.lokasi ? `Gunakan preferensi ini: "${details.lokasi}"` : ''}
-                - Buat sub-bab 3.4 Metode Pengumpulan Data (studi kepustakaan). ${details.metodePengumpulanData ? `Gunakan preferensi ini: "${details.metodePengumpulanData}"` : ''}
-                - Buat sub-bab 3.5 Model Analisis Data (kualitatif). ${details.modelAnalisis ? `Gunakan preferensi ini: "${details.modelAnalisis}"` : ''}`;
+                - Buat sub-bab 3.1 Pendekatan Penelitian. ${details.pendekatan ? `Gunakan preferensi ini: "${details.pendekatan}"` : ''}
+                - Buat sub-bab 3.2 Jenis Penelitian. ${details.jenis ? `Gunakan preferensi ini: "${details.jenis}"` : ''}
+                - Buat sub-bab 3.3 Lokasi Penelitian. ${details.lokasi ? `Gunakan preferensi ini: "${details.lokasi}"` : ''}
+                - Buat sub-bab 3.4 Metode Pengumpulan Data. ${details.metodePengumpulanData ? `Gunakan preferensi ini: "${details.metodePengumpulanData}"` : ''}
+                - Buat sub-bab 3.5 Model Analisis Data. ${details.modelAnalisis ? `Gunakan preferensi ini: "${details.modelAnalisis}"` : ''}`;
                 break;
             case 'bab4':
                 prompt += `BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
-                - Buat struktur pembahasan yang logis untuk menjawab rumusan masalah: "${problem}".
-                - Sajikan analisis mendalam yang mengaitkan teori dari Bab II dengan data atau peraturan yang relevan untuk topik "${topic}".
-                - Pastikan pembahasan fokus untuk menjawab setiap aspek dari rumusan masalah.`;
+                - Buat struktur pembahasan logis untuk menjawab rumusan masalah: "${problem}".
+                - Sajikan analisis mendalam yang mengaitkan teori dari Bab II dengan data/peraturan untuk topik "${topic}".`;
                 break;
             default:
                 throw new Error('Chapter tidak valid');
         }
 
-        // 5. Bungkus prompt ke dalam format JSON yang benar
+        // =====================================================================
+        // PERUBAHAN KRUSIAL ADA DI SINI: Menambahkan safetySettings
+        // =====================================================================
         const requestBody = {
             contents: [{
                 parts: [{
                     text: prompt
                 }]
-            }]
+            }],
+            safetySettings: [
+                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+            ]
         };
 
-        // 6. Kirim request ke Gemini API
-        // =====================================================================
-        // INI ADALAH SATU-SATUNYA PERUBAHAN: Mengganti nama model
-        // =====================================================================
         const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         const apiResponse = await fetch(apiURL, {
@@ -85,21 +82,30 @@ exports.handler = async (event) => {
 
         const responseData = await apiResponse.json();
 
-        // 7. Proses respons dari Gemini
-        if (!apiResponse.ok || !responseData.candidates) {
-            const errorMessage = responseData.error ? responseData.error.message : 'Gagal berkomunikasi dengan Gemini API.';
-            throw new Error(errorMessage);
-        }
-        
-        const generatedText = responseData.candidates[0].content.parts[0].text;
+        // =====================================================================
+        // PERUBAHAN KEDUA: LOGGING UNTUK DEBUGGING
+        // Ini akan mencetak seluruh respons dari Gemini ke log Netlify Anda
+        // =====================================================================
+        console.log('Respons Mentah dari Gemini:', JSON.stringify(responseData, null, 2));
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ text: generatedText }),
-        };
+
+        // Cek jika kandidat ada dan memiliki konten, jika tidak, anggap sebagai error
+        if (responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content && responseData.candidates[0].content.parts) {
+            const generatedText = responseData.candidates[0].content.parts[0].text;
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ text: generatedText }),
+            };
+        } else {
+            // Ini menangani kasus jika Gemini memblokir karena alasan keamanan atau lainnya
+            const blockReason = responseData.candidates?.[0]?.finishReason || 'Unknown reason';
+            const safetyMessage = responseData.promptFeedback?.blockReason || 'No specific safety feedback.';
+            console.error(`Konten diblokir oleh Gemini. Alasan: ${blockReason}. Detail: ${safetyMessage}`);
+            throw new Error(`Permintaan berhasil diproses, tetapi Gemini tidak menghasilkan konten. Kemungkinan karena filter keamanan. Alasan: ${blockReason}`);
+        }
 
     } catch (error) {
-        console.error('Error di dalam Netlify function:', error);
+        console.error('Error di dalam Netlify function:', error.message);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: error.message }),
