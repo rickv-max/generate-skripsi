@@ -1,128 +1,187 @@
 /* public/css/style.css */
 
+/*
+  Gunakan CSS Variables untuk palet warna yang konsisten dan mudah diubah.
+  Ini adalah praktik modern yang membuat styling lebih mudah dikelola.
+*/
+:root {
+    --primary-color: #4A90E2; /* Biru Modern */
+    --primary-hover-color: #357ABD;
+    --secondary-color: #6c757d;
+    --secondary-hover-color: #5a6268;
+    --danger-color: #dc3545;
+    --danger-hover-color: #c82333;
+    --text-color: #212529; /* Arang */
+    --bg-light: #F8F9FA;
+    --border-color: #dee2e6;
+    --soft-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --focus-ring-color: rgba(74, 144, 226, 0.25);
+}
+
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: var(--bg-light);
+    color: var(--text-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
-.container {
-    max-width: 90%;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #ffffff;
-    border-radius: 1rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+/* Styling untuk Navigasi Sidebar */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    color: #4b5563; /* Gray-600 */
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
-input[type="text"], textarea {
+
+.nav-link:hover {
+    background-color: #f3f4f6; /* Gray-100 */
+    color: var(--text-color);
+}
+
+.nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: var(--soft-shadow);
+}
+
+.nav-link.completed {
+    color: #16a34a; /* Green-600 */
+}
+
+.nav-link.completed::after {
+    content: '✔';
+    margin-left: auto;
+    font-weight: bold;
+}
+
+.nav-link svg {
+    margin-right: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Styling Formulir */
+.form-section {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #374151; /* Gray-700 */
+    margin-bottom: 0.5rem;
+}
+
+.form-input {
     width: 100%;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid #d1d5db;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-size: 1rem;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #fff;
 }
-input[type="text"]:focus, textarea:focus {
+
+.form-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
 }
+
+/* Styling Tombol Universal */
 button {
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: var(--soft-shadow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
 }
+
 button:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
+
 button:active {
     transform: translateY(0);
 }
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .btn-primary {
-    background-color: #3b82f6;
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: white;
 }
 .btn-primary:hover {
-    background-color: #2563eb;
+    background-color: var(--primary-hover-color);
 }
+
 .btn-secondary {
-    background-color: #6b7280;
-    color: #ffffff;
+    background-color: var(--secondary-color);
+    color: white;
 }
 .btn-secondary:hover {
-    background-color: #4b5563;
+    background-color: var(--secondary-hover-color);
 }
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+.btn-danger:hover {
+    background-color: var(--danger-hover-color);
+}
+
+/* Gaya untuk Pratinjau Skripsi di Panel Kanan */
+.prose {
+    line-height: 1.6;
+}
+
+.prose h1, .prose h2, .prose h3 {
+    font-weight: 700;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+}
+
+.prose h1 { font-size: 1.8rem; text-align: center; }
+.prose h2 { font-size: 1.5rem; }
+.prose h3 { font-size: 1.25rem; }
+
+.prose p {
+    margin-bottom: 1em;
+}
+
+/* Spinner untuk loading state */
 .loading-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #3b82f6;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-left-color: #ffffff;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     animation: spin 1s linear infinite;
     display: inline-block;
-    vertical-align: middle;
-    margin-left: 0.5rem;
+    margin-right: 0.75rem;
 }
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-.output-section {
-    background-color: #f9fafb;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
-    white-space: pre-wrap; /* Preserve whitespace and line breaks */
-    word-wrap: break-word; /* Break long words */
-    max-height: 70vh; /* Limit height */
-    overflow-y: auto; /* Enable scrolling */
-}
-.chapter-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    color: #1f2937;
-    text-align: center;
-}
-.sub-chapter-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    color: #374151;
-}
-.section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    color: #4b5563;
-}
-.message-box {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    text-align: center;
-    width: 300px;
-}
-.message-box button {
-    margin-top: 15px;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
 }
