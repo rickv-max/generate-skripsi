@@ -2,7 +2,7 @@
   "name": "generate-skripsi",
   "version": "1.0.0",
   "description": "Aplikasi Pembuat Draf Skripsi Hukum Otomatis",
-  "main": "public/js/main.js",
+  "main": "public/js/app.js",
   "scripts": {
     "start": "netlify dev"
   },
