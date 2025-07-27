@@ -94,6 +94,9 @@ exports.handler = async (event) => {
         });
 
         const responseData = await apiResponse.json();
+        
+        // Ini akan mencetak seluruh respons dari Gemini ke log Netlify Anda
+        console.log('Respons Mentah dari Gemini:', JSON.stringify(responseData, null, 2));
 
         // Cek jika respons dari Gemini valid
         if (responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts) {
