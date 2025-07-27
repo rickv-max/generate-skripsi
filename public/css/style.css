@@ -184,3 +184,11 @@ button:disabled {
     padding-bottom: 0.75rem;
     font-size: 0.875rem;
 }
+.result-box {
+    background-color: #f9fafb; /* bg-gray-50 */
+    border: 1px solid #e5e7eb; /* border-gray-200 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1.5rem; /* p-6 */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
