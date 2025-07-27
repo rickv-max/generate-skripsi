@@ -1,3 +1,5 @@
+// public/js/app.js (VERSI FINAL DENGAN ALAMAT FETCH YANG BENAR)
+
 document.addEventListener('DOMContentLoaded', () => {
     // STATE & CACHE
     const appState = { topic: '', problem: '', generated: {} };
@@ -34,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let hasContent = false;
         ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
             if (appState.generated[bab]) {
-                const title = `BAB ${bab.slice(-1)} - ${bab.toUpperCase()}`; // Example title
-                fullText += `<h2>${title}</h2><pre>${appState.generated[bab]}</pre>`;
+                const titleMap = { bab1: "BAB I PENDAHULUAN", bab2: "BAB II TINJAUAN PUSTAKA", bab3: "BAB III METODE PENELITIAN", bab4: "BAB IV PEMBAHASAN" };
+                fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
                 hasContent = true;
             }
         });
@@ -54,10 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
             button.disabled = false; button.innerHTML = originalButtonText; switchView('form-home'); return;
         }
-        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
-        // Ambil detail spesifik bab jika ada
+        
+        // Menggunakan payload yang lebih sederhana sesuai dengan backend terakhir Anda
+        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter.replace('bab', '') };
+
         try {
-            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            // =====================================================================
+            // INI ADALAH PERUBAHAN KRUSIAL: ALAMAT URL TELAH DIGANTI
+            // =====================================================================
+            const response = await fetch('/.netlify/functions/generate-draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || `HTTP error! status: ${response.status}`);
             if (data.text) {
@@ -83,7 +91,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generateBab2Btn').addEventListener('click', (e) => generateChapter('bab2', e.currentTarget));
     document.getElementById('generateBab3Btn').addEventListener('click', (e) => generateChapter('bab3', e.currentTarget));
     document.getElementById('generateBab4Btn').addEventListener('click', (e) => generateChapter('bab4', e.currentTarget));
-    // Clear & Copy listeners di sini...
+    
+    // Listener untuk Clear & Copy
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if(confirm('Yakin ingin membersihkan semua hasil?')) {
+            appState.generated = {};
+            document.querySelectorAll('.result-box').forEach(box => {
+                box.innerText = '';
+                box.classList.add('hidden');
+            });
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('completed'));
+            updateDesktopPreview();
+        }
+    });
+    
+    document.getElementById('copyAllBtn').addEventListener('click', () => {
+        const fullText = document.getElementById('thesisContent').innerText;
+        navigator.clipboard.writeText(fullText).then(() => {
+            alert('Seluruh draf berhasil disalin!');
+        }).catch(() => alert('Gagal menyalin.'));
+    });
 
     // INISIALISASI
     switchView('form-home');
