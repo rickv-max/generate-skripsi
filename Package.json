@@ -1,5 +1,5 @@
 {
-      "name": "nama-repositori-anda", // Ganti dengan nama repositori/proyek Anda yang sebenarnya
+      "name": "generate-skripsi", // Ganti dengan nama repositori/proyek Anda yang sebenarnya
       "version": "1.0.0",
       "description": "Aplikasi Pembuat Draf Skripsi Hukum Otomatis",
       "main": "public/js/main.js",
