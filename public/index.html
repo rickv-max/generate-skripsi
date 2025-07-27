@@ -3,53 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembuat Draf Skripsi Hukum Otomatis</title>
+    <title>AI Thesis Command Center - Pembuat Draf Skripsi Hukum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Pembuat Draf Skripsi Hukum Otomatis</h1>
+<body class="bg-gray-100 font-sans">
+    <div id="app" class="flex h-screen">
+        <!-- Panel Kiri: Navigasi -->
+        <aside class="w-72 bg-white border-r border-gray-200 p-6 flex flex-col flex-shrink-0">
+            <h1 class="text-xl font-bold text-gray-800 mb-8">Thesis Command Center</h1>
+            <nav class="flex flex-col space-y-2">
+                <a href="#home" data-target="form-home" class="nav-link active">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>
+                    <span>Informasi Utama</span>
+                </a>
+                <a href="#bab1" data-target="form-bab1" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
+                    <span>BAB I: Pendahuluan</span>
+                </a>
+                <a href="#bab2" data-target="form-bab2" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                    <span>BAB II: Tinjauan Pustaka</span>
+                </a>
+                <a href="#bab3" data-target="form-bab3" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>BAB III: Metode Penelitian</span>
+                </a>
+                <a href="#bab4" data-target="form-bab4" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                    <span>BAB IV: Pembahasan</span>
+                </a>
+            </nav>
+            <div class="mt-auto pt-6 border-t border-gray-200">
+                <button id="copyAllBtn" class="w-full btn-secondary mb-2" style="display: none;">Salin Seluruh Draf</button>
+                <button id="clearAllBtn" class="w-full btn-danger" style="display: none;">Bersihkan Semua</button>
+            </div>
+        </aside>
 
-        <p class="text-gray-600 mb-6 text-center">
-            Isi "Topik Skripsi" dan "Rumusan Masalah Utama" di bawah. Informasi ini akan di-prefill ke setiap form bab.
-            <br>
-            Kemudian, klik tombol untuk mengisi detail dan membuat draf per bab.
-        </p>
+        <!-- Panel Tengah: Area Kerja -->
+        <main class="flex-1 p-8 overflow-y-auto" style="height: 100vh;">
+            <div id="form-container">
+                <!-- FORM HOME (Initial) -->
+                <div id="form-home" class="form-section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang di Thesis Command Center</h2>
+                    <p class="text-gray-600 mb-6">Mulailah dengan mengisi informasi dasar skripsi Anda. Data ini akan otomatis digunakan sebagai konteks untuk pembuatan setiap bab.</p>
+                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                        <div>
+                            <label for="mainThesisTopic" class="form-label">Topik Utama Skripsi Hukum</label>
+                            <input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Hukum Konsumen dalam Transaksi E-commerce" class="form-input">
+                        </div>
+                        <div>
+                            <label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Utama</label>
+                            <textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana efektivitas perlindungan hukum konsumen dalam transaksi e-commerce menurut UU ITE?" class="form-input"></textarea>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="mb-4">
-            <label for="mainThesisTopic" class="block text-sm font-medium text-gray-700">Topik Skripsi Hukum (Contoh: Perlindungan Hukum Konsumen dalam Transaksi E-commerce):</label>
-            <input type="text" id="mainThesisTopic" placeholder="Masukkan topik skripsi Anda" class="rounded-lg">
-        </div>
+                <!-- FORM BAB I (Hidden by default) -->
+                <div id="form-bab1" class="form-section hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB I – PENDAHULUAN</h2>
+                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-500">Anda dapat memberikan draf awal pada kolom di bawah untuk memandu AI, atau biarkan kosong agar AI membuatnya dari awal.</p>
+                        <div>
+                           <label for="formLatarBelakang" class="form-label">1.1 Latar Belakang (Opsional)</label>
+                           <textarea id="formLatarBelakang" rows="5" placeholder="Tuliskan poin-poin penting atau draf awal latar belakang di sini." class="form-input"></textarea>
+                        </div>
+                        <div>
+                           <label for="formTujuanPenelitian" class="form-label">1.3 Tujuan Penelitian (Opsional)</label>
+                           <textarea id="formTujuanPenelitian" rows="3" placeholder="Contoh: Untuk menganalisis efektivitas perlindungan hukum konsumen..." class="form-input"></textarea>
+                        </div>
+                    </div>
+                    <button id="generateBab1Btn" class="btn-primary mt-6">Buat Draf BAB I</button>
+                </div>
 
-        <div class="mb-4">
-            <label for="mainRumusanMasalah" class="block text-sm font-medium text-gray-700">Rumusan Masalah Utama (Contoh: Bagaimana efektivitas perlindungan hukum konsumen dalam transaksi e-commerce?):</label>
-            <textarea id="mainRumusanMasalah" rows="3" placeholder="Masukkan rumusan masalah utama Anda di sini. Ini akan di-prefill ke setiap bab." class="rounded-lg"></textarea>
-        </div>
+                <!-- FORM BAB II (Hidden by default) -->
+                <div id="form-bab2" class="form-section hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB II – TINJAUAN PUSTAKA</h2>
+                     <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                         <p class="text-sm text-gray-500">AI akan membuat tinjauan umum berdasarkan topik Anda. Tambahkan sub-bab spesifik yang Anda inginkan di bawah ini.</p>
+                        <div>
+                            <label for="mainChapter2Subtopics" class="form-label">Kerangka Teori / Sub-bab Tambahan (Pisahkan dengan koma)</label>
+                            <input type="text" id="mainChapter2Subtopics" placeholder="Contoh: Teori Keadilan, Asas Hukum Perjanjian, Regulasi Terkait" class="form-input">
+                        </div>
+                    </div>
+                    <button id="generateBab2Btn" class="btn-primary mt-6">Buat Draf BAB II</button>
+                </div>
+                
+                <!-- FORM BAB III (Hidden by default) -->
+                <div id="form-bab3" class="form-section hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB III – METODE PENELITIAN</h2>
+                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-500">AI akan menyarankan metode penelitian yang sesuai. Anda bisa memberikan preferensi pada kolom di bawah.</p>
+                        <div>
+                            <label for="formPendekatanPenelitian" class="form-label">3.1 Pendekatan Penelitian (Opsional)</label>
+                            <textarea id="formPendekatanPenelitian" rows="2" placeholder="Contoh: Yuridis normatif, yuridis empiris, atau socio-legal." class="form-input"></textarea>
+                        </div>
+                        <div>
+                            <label for="formJenisPenelitian" class="form-label">3.2 Jenis Penelitian (Opsional)</label>
+                            <textarea id="formJenisPenelitian" rows="2" placeholder="Contoh: Deskriptif, eksplanatif, atau preskriptif." class="form-input"></textarea>
+                        </div>
+                         <div>
+                            <label for="formMetodePengumpulanData" class="form-label">3.4 Metode Pengumpulan Data (Opsional)</label>
+                            <textarea id="formMetodePengumpulanData" rows="2" placeholder="Contoh: Studi dokumen, wawancara, atau observasi." class="form-input"></textarea>
+                        </div>
+                    </div>
+                    <button id="generateBab3Btn" class="btn-primary mt-6">Buat Draf BAB III</button>
+                </div>
 
-        <div class="mb-4">
-            <label for="mainChapter2Subtopics" class="block text-sm font-medium text-gray-700">Sub-bab Tambahan BAB II (Pisahkan dengan koma, contoh: Teori Keadilan, Asas Hukum Perjanjian, Peraturan Terkait):</label>
-            <input type="text" id="mainChapter2Subtopics" placeholder="Masukkan sub-bab tambahan untuk Bab II" class="rounded-lg">
-        </div>
+                <!-- FORM BAB IV (Hidden by default) -->
+                <div id="form-bab4" class="form-section hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB IV – HASIL PENELITIAN DAN PEMBAHASAN</h2>
+                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                         <p class="text-gray-600">BAB IV akan dibuat secara utuh berdasarkan **Topik Skripsi** dan **Rumusan Masalah Utama** yang telah Anda masukkan.</p>
+                         <p class="text-gray-600 mt-2">AI akan menyusun analisis dan pembahasan secara logis untuk menjawab rumusan masalah tersebut. Pastikan rumusan masalah Anda sudah jelas.</p>
+                    </div>
+                    <button id="generateBab4Btn" class="btn-primary mt-6">Buat Draf BAB IV</button>
+                </div>
 
-        <div class="mb-6 flex space-x-4 justify-center">
-            <button id="openBab1FormBtn" class="btn-primary">Buat BAB I</button>
-            <button id="openBab2FormBtn" class="btn-primary">Buat BAB II</button>
-        </div>
-        <div class="mb-6 flex space-x-4 justify-center">
-            <button id="openBab3FormBtn" class="btn-primary">Buat BAB III</button>
-            <button id="openBab4FormBtn" class="btn-primary">Buat BAB IV</button>
-        </div>
-        <div class="mb-6 flex space-x-4 justify-center">
-            <button id="copyAllBtn" class="btn-secondary" style="display: none;">Salin Seluruh Skripsi</button>
-            <button id="clearAllBtn" class="btn-secondary" style="display: none;">Bersihkan Output</button>
-        </div>
+            </div>
+        </main>
 
-        <div id="output" class="output-section hidden">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Draf Skripsi yang Dihasilkan:</h2>
-            <div id="thesisContent"></div>
-        </div>
+        <!-- Panel Kanan: Pratinjau Langsung -->
+        <aside class="w-1/3 bg-white border-l border-gray-200 p-8 overflow-y-auto flex-shrink-0" style="height: 100vh;">
+            <div class="sticky top-0 bg-white py-4 border-b border-gray-200 -mt-8 -mx-8 px-8">
+                 <h2 class="text-xl font-bold text-gray-800">Pratinjau Draf Skripsi</h2>
+            </div>
+            <div id="thesisContent" class="prose prose-sm max-w-none mt-6">
+                <p class="text-gray-500">Draf yang Anda buat akan muncul di sini secara otomatis...</p>
+            </div>
+        </aside>
     </div>
 
     <script src="js/app.js"></script>
