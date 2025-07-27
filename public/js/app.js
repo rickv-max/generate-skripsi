@@ -1,4 +1,4 @@
-// public/js/app.js (VERSI FINAL DENGAN PROGRESS BAR YANG BISA DIKLIK)
+// public/js/app.js (VERSI FINAL DENGAN PERBAIKAN TYPO KRUSIAL)
 
 document.addEventListener('DOMContentLoaded', () => {
     // STATE & CACHE
@@ -17,8 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const oldStepIndex = appState.currentStep;
         if (newStepIndex === oldStepIndex) return;
 
+        // =====================================================================
+        // INI ADALAH BARIS YANG SEBELUMNYA MEMILIKI TYPO DAN SEKARANG SUDAH BENAR
+        // (Sebelumnya: oldStep_index, sekarang: oldStepIndex)
+        // =====================================================================
         if (wizardSteps[oldStepIndex]) {
-            wizardSteps[oldStep_index].classList.add('exiting');
+            wizardSteps[oldStepIndex].classList.add('exiting');
             wizardSteps[oldStepIndex].addEventListener('animationend', () => {
                 wizardSteps[oldStepIndex].classList.remove('active', 'exiting');
             }, { once: true });
@@ -91,9 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // =====================================================================
-    // INI ADALAH BAGIAN YANG SAYA TAMBAHKAN KEMBALI
-    // =====================================================================
     // EVENT LISTENERS
     progressSteps.forEach(step => {
         step.addEventListener('click', () => {
@@ -104,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    // =====================================================================
 
     nextBtn.addEventListener('click', () => {
         if (appState.currentStep < TOTAL_STEPS - 1) navigateToStep(appState.currentStep + 1);
