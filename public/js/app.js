@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (chapter === 'bab3') {
             payload.details.pendekatan = document.getElementById('formPendekatanPenelitian').value;
             payload.details.jenis = document.getElementById('formJenisPenelitian').value;
+            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value;
             payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
             payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
         }
