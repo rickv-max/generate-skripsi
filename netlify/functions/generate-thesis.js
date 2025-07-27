@@ -51,7 +51,7 @@ exports.handler = async (event) => {
                 - Jelaskan metode penelitian hukum yang paling sesuai untuk topik "${topic}".
                 - Buat sub-bab 3.1 Pendekatan Penelitian (disarankan yuridis normatif jika sesuai, atau jelaskan pilihan lain). ${details.pendekatan ? `Gunakan preferensi ini: "${details.pendekatan}"` : ''}
                 - Buat sub-bab 3.2 Jenis Penelitian (misal: deskriptif analitis). ${details.jenis ? `Gunakan preferensi ini: "${details.jenis}"` : ''}
-                - Buat sub-bab 3.3 Jenis dan Sumber Data (data primer, sekunder).
+                - Buat sub-bab 3.3 Lokasi Penelitian (jelaskan di mana penelitian dilakukan, bisa berupa studi kepustakaan jika tidak ada lokasi fisik). ${details.lokasi ? `Gunakan preferensi ini: "${details.lokasi}"` : ''}
                 - Buat sub-bab 3.4 Metode Pengumpulan Data (studi kepustakaan). ${details.metodePengumpulanData ? `Gunakan preferensi ini: "${details.metodePengumpulanData}"` : ''}
                 - Buat sub-bab 3.5 Model Analisis Data (kualitatif). ${details.modelAnalisis ? `Gunakan preferensi ini: "${details.modelAnalisis}"` : ''}`;
                 break;
