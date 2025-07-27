@@ -1,9 +1,13 @@
 [build]
       publish = "public"
       functions = "netlify/functions"
-      command = "echo 'Static site and functions ready for deployment'" # Biarkan ini sederhana
+      command = "echo 'Static site and functions ready for deployment'" # Ini tetap sederhana
+
+    [[plugins]]
+      package = "@netlify/plugin-functions-install-core" # TAMBAHKAN BAGIAN INI
 
     [[redirects]]
       from = "/.netlify/functions/*"
       to = "/.netlify/functions/:splat"
       status = 200
+    ```
