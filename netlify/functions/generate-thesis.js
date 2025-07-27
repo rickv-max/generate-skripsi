@@ -62,7 +62,7 @@ exports.handler = async (event) => {
                 throw new Error('Chapter tidak valid');
         }
 
-        // 5. Bungkus prompt ke dalam format JSON yang benar sesuai permintaan Gemini
+        // 5. Bungkus prompt ke dalam format JSON yang benar
         const requestBody = {
             contents: [{
                 parts: [{
@@ -72,7 +72,11 @@ exports.handler = async (event) => {
         };
 
         // 6. Kirim request ke Gemini API
-        const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+        // =====================================================================
+        // INI ADALAH SATU-SATUNYA PERUBAHAN: Mengganti nama model
+        // =====================================================================
+        const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        
         const apiResponse = await fetch(apiURL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
