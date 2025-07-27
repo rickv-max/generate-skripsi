@@ -1,98 +1,100 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thesis Architect - AI Powered</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thesis Architect</title>
+  <link href="/css/style.css" rel="stylesheet" />
 </head>
-<body class="dark-mode">
-    <div id="app" class="relative min-h-screen lg:flex">
-        <!-- Header Mobile -->
-        <div class="bg-card p-4 flex justify-between items-center border-b border-border lg:hidden">
-            <h1 class="text-xl font-bold text-light">Thesis Architect</h1>
-            <button id="mobile-menu-button" class="p-2">
-                <svg id="menu-open-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                <svg id="menu-close-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+<body class="bg-gray-100 text-gray-800">
+  <!-- SIDEBAR -->
+  <div id="sidebar" class="fixed top-0 left-0 w-64 bg-white h-full shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-200 z-40">
+    <div class="p-4 font-bold text-xl border-b">📘 Thesis Architect</div>
+    <nav class="p-4 space-y-2">
+      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-home">🏠 Home</a>
+      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab1">📝 Bab I</a>
+      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab2">📚 Bab II</a>
+      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab3">🔬 Bab III</a>
+      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab4">💡 Bab IV</a>
+    </nav>
+  </div>
+
+  <!-- OVERLAY MOBILE -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden"></div>
+
+  <!-- HEADER -->
+  <header class="bg-white shadow-lg p-4 flex justify-between items-center lg:ml-64">
+    <button id="mobile-menu-button" class="lg:hidden">
+      <span id="menu-open-icon">📂</span>
+      <span id="menu-close-icon" class="hidden">❌</span>
+    </button>
+    <h1 class="text-lg font-semibold">Generator Skripsi Otomatis</h1>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="p-4 lg:ml-64 space-y-6">
+    <!-- SECTION: HOME -->
+    <section id="form-home" class="form-section">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-bold mb-2">📝 Formulir Utama</h2>
+        <label class="block mb-2">Topik Skripsi:</label>
+        <input type="text" id="mainThesisTopic" class="w-full p-2 border rounded mb-4" placeholder="Masukkan topik skripsi Anda" />
+        <label class="block mb-2">Rumusan Masalah:</label>
+        <textarea id="mainRumusanMasalah" class="w-full p-2 border rounded" placeholder="Masukkan rumusan masalah"></textarea>
+      </div>
+    </section>
+
+    <!-- SECTION: BAB 1 -->
+    <section id="form-bab1" class="form-section hidden">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-bold mb-2">📖 Bab I - Pendahuluan</h2>
+        <button id="generateBab1Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab I</button>
+        <div id="result-bab1" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: BAB 2 -->
+    <section id="form-bab2" class="form-section hidden">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-bold mb-2">📖 Bab II - Tinjauan Pustaka</h2>
+        <button id="generateBab2Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab II</button>
+        <div id="result-bab2" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: BAB 3 -->
+    <section id="form-bab3" class="form-section hidden">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-bold mb-2">📖 Bab III - Metodologi Penelitian</h2>
+        <button id="generateBab3Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab III</button>
+        <div id="result-bab3" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: BAB 4 -->
+    <section id="form-bab4" class="form-section hidden">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-bold mb-2">📖 Bab IV - Pembahasan</h2>
+        <button id="generateBab4Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab IV</button>
+        <div id="result-bab4" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: OUTPUT -->
+    <section class="bg-white p-4 rounded shadow">
+      <div class="flex justify-between mb-2">
+        <h2 class="text-xl font-bold">🧾 Pratinjau Keseluruhan</h2>
+        <div class="space-x-2">
+          <button id="copyAllBtn" class="hidden px-3 py-1 bg-green-500 text-white rounded">📋 Salin Semua</button>
+          <button id="clearAllBtn" class="hidden px-3 py-1 bg-red-500 text-white rounded">🧹 Bersihkan</button>
         </div>
+      </div>
+      <div id="thesisContent" class="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded max-h-[400px] overflow-y-auto">
+        <p class="text-gray-500">Pratinjau keseluruhan akan muncul di sini.</p>
+      </div>
+    </section>
+  </main>
 
-        <!-- Sidebar Navigasi -->
-        <aside id="sidebar" class="transform -translate-x-full transition-transform duration-300 ease-in-out bg-card border-r border-border p-6 flex flex-col fixed top-0 left-0 h-full w-72 z-30 lg:relative lg:translate-x-0 lg:flex-shrink-0">
-            <h1 class="text-2xl font-bold text-light mb-8 hidden lg:block">Thesis Architect</h1>
-            <nav class="flex flex-col space-y-2">
-                <a href="#home" data-target="form-home" class="nav-link active"><span>Informasi Utama</span></a>
-                <a href="#bab1" data-target="form-bab1" class="nav-link"><span>BAB I: Pendahuluan</span></a>
-                <a href="#bab2" data-target="form-bab2" class="nav-link"><span>BAB II: Tinjauan Pustaka</span></a>
-                <a href="#bab3" data-target="form-bab3" class="nav-link"><span>BAB III: Metode Penelitian</span></a>
-                <a href="#bab4" data-target="form-bab4" class="nav-link"><span>BAB IV: Pembahasan</span></a>
-            </nav>
-            <div class="mt-auto pt-6 border-t border-border">
-                <button id="copyAllBtn" class="w-full btn-secondary mb-2 hidden">Salin Seluruh Draf</button>
-                <button id="clearAllBtn" class="w-full btn-danger hidden">Bersihkan Semua</button>
-            </div>
-        </aside>
-        
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-75 z-20 hidden lg:hidden"></div>
-
-        <!-- Konten Utama -->
-        <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
-            <div id="form-home" class="form-section">
-                <h2 class="text-3xl font-bold mb-2">Fondasi Skripsi</h2>
-                <p class="text-muted mb-6">Informasi ini akan menjadi konteks utama untuk semua bab.</p>
-                <div class="space-y-4">
-                    <div><label for="mainThesisTopic" class="form-label">Topik Utama Skripsi Hukum</label><input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Data Pribadi di Era Digital" class="form-input"></div>
-                    <div><label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Utama</label><textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana urgensi pembentukan undang-undang..." class="form-input"></textarea></div>
-                </div>
-            </div>
-
-            <div id="form-bab1" class="form-section hidden">
-                <h2 class="text-3xl font-bold mb-6">Bab I: Pendahuluan</h2>
-                <div class="space-y-4">
-                    <div><label for="formLatarBelakang" class="form-label">Poin Latar Belakang (Opsional)</label><textarea id="formLatarBelakang" rows="5" class="form-input"></textarea></div>
-                    <div><label for="formTujuanPenelitian" class="form-label">Poin Tujuan Penelitian (Opsional)</label><textarea id="formTujuanPenelitian" rows="3" class="form-input"></textarea></div>
-                </div>
-                <button class="btn-primary mt-6 generate-button" data-chapter="bab1">Bangun Draf BAB I</button>
-            </div>
-
-            <div id="form-bab2" class="form-section hidden">
-                <h2 class="text-3xl font-bold mb-6">Bab II: Tinjauan Pustaka</h2>
-                <div class="space-y-4">
-                    <div><label for="mainChapter2Subtopics" class="form-label">Kerangka Teori / Sub-bab (Pisahkan koma)</label><input type="text" id="mainChapter2Subtopics" class="form-input"></div>
-                </div>
-                <button class="btn-primary mt-6 generate-button" data-chapter="bab2">Bangun Draf BAB II</button>
-            </div>
-
-            <div id="form-bab3" class="form-section hidden">
-                <h2 class="text-3xl font-bold mb-6">Bab III: Metode Penelitian</h2>
-                <div class="space-y-4">
-                    <div><label for="formPendekatanPenelitian" class="form-label">Pendekatan (Opsional)</label><textarea id="formPendekatanPenelitian" rows="2" class="form-input"></textarea></div>
-                    <div><label for="formJenisPenelitian" class="form-label">Jenis (Opsional)</label><textarea id="formJenisPenelitian" rows="2" class="form-input"></textarea></div>
-                    <div><label for="formLokasiPenelitian" class="form-label">Lokasi (Opsional)</label><textarea id="formLokasiPenelitian" rows="2" class="form-input"></textarea></div>
-                    <div><label for="formMetodePengumpulanData" class="form-label">Metode Pengumpulan Data (Opsional)</label><textarea id="formMetodePengumpulanData" rows="2" class="form-input"></textarea></div>
-                    <div><label for="formModelAnalisisData" class="form-label">Model Analisis Data (Opsional)</label><textarea id="formModelAnalisisData" rows="2" class="form-input"></textarea></div>
-                </div>
-                <button class="btn-primary mt-6 generate-button" data-chapter="bab3">Bangun Draf BAB III</button>
-            </div>
-
-            <div id="form-bab4" class="form-section hidden">
-                <h2 class="text-3xl font-bold mb-6">Bab IV: Pembahasan</h2>
-                <div class="bg-card p-6 rounded-lg border border-border"><p class="text-muted">Bab IV akan dibangun secara utuh berdasarkan fondasi Topik dan Rumusan Masalah Anda.</p></div>
-                <button class="btn-primary mt-6 generate-button" data-chapter="bab4">Bangun Draf BAB IV</button>
-            </div>
-            
-            <!-- Area Hasil untuk Semua Bab -->
-            <div id="result-container" class="mt-8"></div>
-        </main>
-
-        <!-- Panel Kanan Pratinjau Desktop -->
-        <aside id="desktop-preview" class="w-1/3 bg-card border-l border-border p-8 overflow-y-auto hidden lg:block">
-            <h2 class="text-xl font-bold">Pratinjau Keseluruhan</h2>
-            <div id="thesisContent" class="prose mt-6"></div>
-        </aside>
-    </div>
-    <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>
