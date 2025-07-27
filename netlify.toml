@@ -3,8 +3,10 @@
   functions = "netlify/functions"
   command = "npm install"
 
+# VERSI YANG BENAR
 [functions]
-  timeout = 25
+  # Tanda bintang (*) berarti aturan ini berlaku untuk SEMUA fungsi
+  "*" = { timeout = 25 }
 
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
