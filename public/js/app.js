@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // =====================================================================
             // INI ADALAH PERUBAHAN KRUSIAL: ALAMAT URL TELAH DIGANTI
             // =====================================================================
-            const response = await fetch('/.netlify/functions/generate-draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || `HTTP error! status: ${response.status}`);
