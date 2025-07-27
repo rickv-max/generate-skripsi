@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             payload.details.pendekatan = document.getElementById('formPendekatanPenelitian').value;
             payload.details.jenis = document.getElementById('formJenisPenelitian').value;
             payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
+            payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
         }
 
         try {
