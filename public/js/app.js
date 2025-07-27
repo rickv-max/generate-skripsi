@@ -54,12 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
                 
                 // Buat kartu hasil di kontainer hasil utama
-                const resultCard = document.createElement('div');
-                resultCard.className = 'result-card';
-                resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
-                resultContainer.appendChild(resultCard);
+const resultCard = document.createElement('div');
+resultCard.className = 'result-card';
+resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
+resultContainer.appendChild(resultCard);
 
-                hasContent = true;
+// Baris tambahan untuk auto-scroll ke kartu yang baru dibuat
+resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+hasContent = true;
             }
         });
 
