@@ -1,46 +1,46 @@
 :root {
     --bg-dark: #111827; --bg-card: #1F2937; --border-color: #374151;
     --text-light: #F9FAFB; --text-muted: #9CA3AF; --accent-blue: #38BDF8;
-    --accent-blue-hover: #0EA5E9;
+    --accent-blue-hover: #0EA5E9; --danger-color: #F43F5E;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideInFromRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes slideOutToLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-30px); opacity: 0; } }
 body.dark-mode {
     font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-light);
-    background-image: radial-gradient(circle at 1px 1px, var(--border-color) 1px, transparent 0);
-    background-size: 25px 25px; animation: fadeIn 0.8s ease-in-out;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+    background-size: 30px 30px;
 }
-#app-container { display: flex; flex-direction: column; max-width: 768px; margin: auto; min-height: 100vh; padding: 1rem; }
-.app-header { text-align: center; padding: 1.5rem 0; }
-.progress-bar-container { display: flex; justify-content: space-between; margin-bottom: 2rem; }
-.progress-step {
-    flex: 1; text-align: center; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color);
-    color: var(--text-muted); font-size: 0.875rem; transition: all 0.3s ease; cursor: pointer;
-}
-.progress-step.active { border-color: var(--accent-blue); color: var(--accent-blue); font-weight: 600; }
-.progress-step.completed { border-color: #4ADE80; color: #4ADE80; }
-.progress-step:not(.completed):not(.active) { cursor: not-allowed; }
-#wizard-container { flex: 1; overflow: hidden; position: relative; min-height: 400px; }
-.wizard-step { position: absolute; width: 100%; visibility: hidden; opacity: 0; transform: translateX(30px); transition: all 0.4s ease-in-out; }
-.wizard-step.active { visibility: visible; opacity: 1; transform: translateX(0); animation: slideInFromRight 0.5s ease-out forwards; }
-.wizard-step.exiting { animation: slideOutToLeft 0.5s ease-in forwards; }
-.step-header { text-align: center; margin-bottom: 2rem; }
-.step-title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem; }
-.step-subtitle { color: var(--text-muted); }
-.step-content { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+.nav-link { display: flex; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; color: var(--text-muted); transition: all 0.2s ease; cursor: pointer; }
+.nav-link:hover { background-color: var(--border-color); color: var(--text-light); }
+.nav-link.active { background-color: var(--accent-blue); color: var(--bg-dark); font-weight: 600; }
+.nav-link.completed::after { content: '✔'; margin-left: auto; color: #4ADE80; }
 .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-muted); }
 .form-input {
-    width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-dark); border: 1px solid var(--border-color);
-    border-radius: 0.5rem; color: var(--text-light); transition: all 0.2s;
+    width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-dark);
+    border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-light); transition: all 0.2s;
 }
 .form-input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3); }
-.app-footer { display: flex; justify-content: space-between; padding: 1.5rem 0; }
-button { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; justify-content: center; }
+button {
+    padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; border: none; display: inline-flex; align-items: center; justify-content: center;
+}
 .btn-primary { background-color: var(--accent-blue); color: var(--bg-dark); }
 .btn-primary:hover:not(:disabled) { background-color: var(--accent-blue-hover); transform: translateY(-2px); }
-.btn-secondary { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); }
+.btn-secondary, .btn-danger { background-color: transparent; color: var(--text-light); border: 1px solid var(--border-color); }
+.btn-danger { border-color: var(--danger-color); color: var(--danger-color); }
 .btn-secondary:hover:not(:disabled) { background-color: var(--border-color); }
+.btn-danger:hover:not(:disabled) { background-color: var(--danger-color); color: var(--text-light); }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
-.result-box { background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 1rem; white-space: pre-wrap; word-wrap: break-word; max-height: 300px; overflow-y: auto; }
 .loading-spinner { border: 3px solid rgba(0, 0, 0, 0.3); border-left-color: var(--bg-dark); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-right: 0.75rem; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.prose h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+.prose pre { white-space: pre-wrap; word-wrap: break-word; background-color: transparent; padding: 0; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-muted); }
+.result-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.result-card h3 { font-size: 1.125rem; font-weight: 600; color: var(--accent-blue); }
+.result-card pre { margin-top: 1rem; white-space: pre-wrap; word-wrap: break-word; color: var(--text-muted); }
