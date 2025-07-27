@@ -34,12 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // BAGIAN 2: Logika untuk Menu Mobile Responsif
     // =================================================
     const toggleMenu = () => {
-        // Ini adalah perubahan utamanya.
-        // Kita langsung menukar kelas utilitas dari Tailwind.
         sidebar.classList.toggle('-translate-x-full');
         sidebar.classList.toggle('translate-x-0');
-
-        // Bagian ini tetap sama
         sidebarOverlay.classList.toggle('hidden');
         menuOpenIcon.classList.toggle('hidden');
         menuCloseIcon.classList.toggle('hidden');
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // BAGIAN 3: Fungsi Inti Aplikasi
     // =================================================
 
-    // Fungsi untuk mengubah tampilan form yang aktif
     const switchView = (targetId) => {
         formSections.forEach(section => section.classList.add('hidden'));
         
@@ -70,13 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         appState.currentView = targetId;
 
-        // Otomatis tutup sidebar setelah memilih menu di mobile
-        if (window.innerWidth < 1024 && sidebar.classList.contains('open')) {
+        if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
             toggleMenu();
         }
     };
 
-    // Fungsi untuk memperbarui panel pratinjau di sebelah kanan
     const updatePreview = () => {
         let fullText = '';
         let hasContent = false;
@@ -111,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Fungsi utama untuk memanggil API dan menghasilkan draf bab
     async function generateChapter(chapter, button) {
         const originalButtonText = button.innerHTML;
         button.disabled = true;
@@ -135,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             details: {}
         };
         
+        // Mengisi detail untuk setiap bab
         if (chapter === 'bab1') {
             payload.details.latarBelakang = document.getElementById('formLatarBelakang').value;
             payload.details.tujuanPenelitian = document.getElementById('formTujuanPenelitian').value;
@@ -143,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (chapter === 'bab3') {
             payload.details.pendekatan = document.getElementById('formPendekatanPenelitian').value;
             payload.details.jenis = document.getElementById('formJenisPenelitian').value;
-            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value;
+            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value; 
             payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
             payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
         }
@@ -156,18 +149,28 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
+
+            // Ini adalah baris penting untuk debugging di browser
+            console.log("Data berhasil diterima dari backend:", data);
+
             if (!response.ok) {
+                // Jika server mengembalikan error, tampilkan pesan error dari server
                 throw new Error(data.error || `HTTP error! status: ${response.status}`);
             }
-
-            appState.generated[chapter] = data.text;
-            updatePreview();
             
-            document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
+            // Pastikan data yang diterima memiliki properti 'text'
+            if (data.text) {
+                appState.generated[chapter] = data.text;
+                updatePreview();
+                document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
+            } else {
+                // Jika tidak ada 'text', berarti ada masalah meskipun status OK
+                throw new Error("Respons dari server tidak berisi teks yang diharapkan.");
+            }
 
         } catch (error) {
-            console.error('Error generating chapter:', error);
-            alert(`Gagal membuat draf: ${error.message}`);
+            console.error('Error di dalam fungsi generateChapter (frontend):', error);
+            alert(`Gagal memproses draf: ${error.message}`);
         } finally {
             button.disabled = false;
             button.innerHTML = originalButtonText;
@@ -175,19 +178,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================
-    // BAGIAN 4: Event Listeners (Menghubungkan Fungsi ke Aksi Pengguna)
+    // BAGIAN 4: Event Listeners
     // =================================================
 
-    // Event listener untuk semua link navigasi di sidebar
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const targetId = e.currentTarget.dataset.target;
-            switchView(targetId);
+            switchView(e.currentTarget.dataset.target);
         });
     });
 
-    // Event listener untuk tombol "Salin"
     copyAllBtn.addEventListener('click', () => {
         const fullText = thesisContentEl.innerText;
         navigator.clipboard.writeText(fullText).then(() => {
@@ -198,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Event listener untuk tombol "Bersihkan"
     clearAllBtn.addEventListener('click', () => {
         if (confirm('Apakah Anda yakin ingin menghapus semua draf yang telah dibuat?')) {
             appState.generated = { bab1: '', bab2: '', bab3: '', bab4: '' };
@@ -207,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Menghubungkan setiap tombol "Buat Draf" ke fungsinya masing-masing
     document.getElementById('generateBab1Btn').addEventListener('click', (e) => generateChapter('bab1', e.currentTarget));
     document.getElementById('generateBab2Btn').addEventListener('click', (e) => generateChapter('bab2', e.currentTarget));
     document.getElementById('generateBab3Btn').addEventListener('click', (e) => generateChapter('bab3', e.currentTarget));
