@@ -1,3 +1,35 @@
+// VERSI YANG SUDAH DIPERBAIKI
+const requestBody = {
+  contents: [
+    {
+      parts: [{ text: prompt }]
+    }
+  ],
+  safetySettings: [
+    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+  ],
+  // =========================================================
+  // TAMBAHKAN BLOK INI
+  // =========================================================
+  generationConfig: {
+    "temperature": 1,
+    "topK": 0,
+    "topP": 0.95,
+    "maxOutputTokens": 8192,
+    "stopSequences": [],
+  }
+};```
+
+---
+
+### **Kode `generate-thesis.js` Lengkap untuk Anda Salin**
+
+Untuk memastikan tidak ada kesalahan sama sekali, berikut adalah **seluruh file `generate-thesis.js` Anda yang sudah saya perbaiki**. Anda bisa langsung mengganti total isi file Anda dengan ini.
+
+```javascript
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
@@ -46,7 +78,15 @@ Tugas Spesifik: Buatkan **draf lengkap** untuk **BAB ${chapter.toUpperCase()}** 
         { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-      ]
+      ],
+      // Menambahkan konfigurasi generasi untuk model Pro
+      generationConfig: {
+        "temperature": 1,
+        "topK": 0,
+        "topP": 0.95,
+        "maxOutputTokens": 8192,
+        "stopSequences": [],
+      }
     };
 
     const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
