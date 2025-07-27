@@ -1,9 +1,9 @@
+// public/js/app.js (VERSI FINAL DENGAN PERBAIKAN LOGIKA INISIALISASI)
+
 document.addEventListener('DOMContentLoaded', () => {
-    // STATE
+    // STATE & CACHE
     const appState = { topic: '', problem: '', generated: {}, currentStep: 0 };
     const TOTAL_STEPS = 6;
-
-    // CACHE ELEMENTS
     const wizardSteps = document.querySelectorAll('.wizard-step');
     const progressSteps = document.querySelectorAll('.progress-step');
     const nextBtn = document.getElementById('next-step-btn');
@@ -12,84 +12,100 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalOutput = document.getElementById('final-output');
     const copyAllBtn = document.getElementById('copyAllBtn');
 
-    // FUNCTIONS
-    const navigateToStep = (stepIndex) => {
-        const currentActiveStep = document.querySelector('.wizard-step.active');
-        if(currentActiveStep) {
-            currentActiveStep.classList.add('exiting');
-            currentActiveStep.addEventListener('animationend', () => {
-                currentActiveStep.classList.remove('active', 'exiting');
+    // FUNGSI INTI
+    const navigateToStep = (newStepIndex) => {
+        const oldStepIndex = appState.currentStep;
+        if (newStepIndex === oldStepIndex) return; // Jangan lakukan apa pun jika tujuannya sama
+
+        // Sembunyikan langkah lama dengan animasi
+        if (wizardSteps[oldStepIndex]) {
+            wizardSteps[oldStepIndex].classList.add('exiting');
+            wizardSteps[oldStepIndex].addEventListener('animationend', () => {
+                wizardSteps[oldStepIndex].classList.remove('active', 'exiting');
             }, { once: true });
         }
-        
-        wizardSteps[stepIndex].classList.add('active');
-        appState.currentStep = stepIndex;
+
+        // Tampilkan langkah baru
+        if (wizardSteps[newStepIndex]) {
+            wizardSteps[newStepIndex].classList.add('active');
+        }
+
+        appState.currentStep = newStepIndex;
         updateUI();
     };
 
     const updateUI = () => {
-        // Progress Bar
+        // Update Progress Bar
         progressSteps.forEach((step, index) => {
             step.classList.remove('active', 'completed');
-            if(index < appState.currentStep) step.classList.add('completed');
-            if(index === appState.currentStep) step.classList.add('active');
+            if (index < appState.currentStep) step.classList.add('completed');
+            if (index === appState.currentStep) step.classList.add('active');
         });
 
-        // Buttons
+        // Update Tombol Navigasi
         prevBtn.style.visibility = appState.currentStep > 0 ? 'visible' : 'hidden';
         nextBtn.style.visibility = appState.currentStep < TOTAL_STEPS - 1 ? 'visible' : 'hidden';
 
-        if(appState.currentStep === 0){
-             nextBtn.disabled = !(document.getElementById('mainThesisTopic').value && document.getElementById('mainRumusanMasalah').value);
-        } else if(appState.currentStep > 0 && appState.currentStep < TOTAL_STEPS - 1) {
-             const chapter = `bab${appState.currentStep}`;
-             nextBtn.disabled = !appState.generated[chapter];
+        // Logika untuk menonaktifkan tombol 'Selanjutnya'
+        if (appState.currentStep === 0) {
+            nextBtn.disabled = !(document.getElementById('mainThesisTopic').value && document.getElementById('mainRumusanMasalah').value);
+        } else if (appState.currentStep > 0 && appState.currentStep < TOTAL_STEPS - 1) {
+            const chapter = `bab${appState.currentStep}`;
+            nextBtn.disabled = !appState.generated[chapter];
         }
 
-        if(appState.currentStep === TOTAL_STEPS - 1) {
+        // Logika untuk halaman Selesai
+        if (appState.currentStep === TOTAL_STEPS - 1) {
             let fullText = '';
-            for(let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const chapterKey = `bab${i}`;
-                if(appState.generated[chapterKey]) {
-                    fullText += `BAB ${i}\n\n${appState.generated[chapterKey]}\n\n---\n\n`;
+                if (appState.generated[chapterKey]) {
+                    fullText += `====================\nBAB ${i}\n====================\n\n${appState.generated[chapterKey]}\n\n\n`;
                 }
             }
-            finalOutput.value = fullText;
+            finalOutput.value = fullText.trim();
         }
     };
 
     async function generateChapter(chapter, button) {
-        // ... (fungsi generateChapter sama seperti sebelumnya, tapi dengan beberapa penyesuaian)
-        button.disabled = true; // ... loading state
-        
+        const originalButtonText = button.textContent;
+        button.disabled = true;
+        button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
+
         appState.topic = document.getElementById('mainThesisTopic').value;
         appState.problem = document.getElementById('mainRumusanMasalah').value;
 
         const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
-        // ... (mengisi payload.details)
-
+        // Anda bisa menambahkan pengambilan data detail di sini jika diperlukan
+        
         try {
-            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', body: JSON.stringify(payload) });
+            const response = await fetch('/.netlify/functions/generate-thesis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
             const data = await response.json();
-            if(!response.ok) throw new Error(data.error || 'Request failed');
+            if (!response.ok) throw new Error(data.error || 'Request gagal');
             
             appState.generated[chapter] = data.text;
-            document.getElementById(`result-${chapter}`).innerText = data.text;
-            document.getElementById(`result-${chapter}`).classList.remove('hidden');
-            updateUI(); // Enable next button
+            const resultBox = document.getElementById(`result-${chapter}`);
+            resultBox.innerText = data.text;
+            resultBox.classList.remove('hidden');
+            updateUI(); // Ini akan mengaktifkan tombol 'Selanjutnya'
         } catch (error) {
             alert('Gagal: ' + error.message);
         } finally {
-            button.disabled = false; // ... reset state
+            button.disabled = false;
+            button.innerHTML = originalButtonText;
         }
     }
 
     // EVENT LISTENERS
     nextBtn.addEventListener('click', () => {
-        if(appState.currentStep < TOTAL_STEPS - 1) navigateToStep(appState.currentStep + 1);
+        if (appState.currentStep < TOTAL_STEPS - 1) navigateToStep(appState.currentStep + 1);
     });
     prevBtn.addEventListener('click', () => {
-        if(appState.currentStep > 0) navigateToStep(appState.currentStep - 1);
+        if (appState.currentStep > 0) navigateToStep(appState.currentStep - 1);
     });
     
     generateButtons.forEach(button => {
@@ -99,13 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
     copyAllBtn.addEventListener('click', () => {
         finalOutput.select();
         document.execCommand('copy');
-        alert('Draf skripsi disalin!');
+        alert('Draf skripsi lengkap berhasil disalin!');
     });
     
-    // Validasi untuk step pertama
     document.getElementById('mainThesisTopic').addEventListener('input', updateUI);
     document.getElementById('mainRumusanMasalah').addEventListener('input', updateUI);
 
-    // INITIALIZATION
-    navigateToStep(0);
+    // =========================================================
+    // INISIALISASI YANG BENAR (TIDAK LAGI MENYEBABKAN BUG)
+    // =========================================================
+    // Panggil updateUI() secara langsung untuk mengatur status tombol awal
+    updateUI();
 });
