@@ -1,61 +1,94 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thesis Architect</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Architect - Powered by AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <header>
-    <h1>📘 Thesis Architect</h1>
-    <nav>
-      <a href="#" class="nav-link">🏠 Home</a>
-      <a href="#bab1" class="nav-link">📝 Bab I</a>
-      <a href="#bab2" class="nav-link">📚 Bab II</a>
-      <a href="#bab3" class="nav-link">🔬 Bab III</a>
-      <a href="#bab4" class="nav-link">💡 Bab IV</a>
-    </nav>
-  </header>
+<body class="dark-mode">
+    <div id="app-container">
+        <header class="app-header">
+            <h1 class="text-xl font-bold tracking-wider">THESIS ARCHITECT</h1>
+        </header>
 
-  <main>
-    <section class="form-section">
-      <h2>📝 Formulir Utama</h2>
-      <div class="form-group">
-        <label for="topik">Topik Skripsi:</label>
-        <input type="text" id="topik" placeholder="Masukkan topik skripsi Anda" />
-      </div>
-      <div class="form-group">
-        <label for="rumusan">Rumusan Masalah:</label>
-        <textarea id="rumusan" placeholder="Masukkan rumusan masalah"></textarea>
-      </div>
-    </section>
+        <div id="progress-bar" class="progress-bar-container">
+            <div class="progress-step active" data-step="0">Info Utama</div>
+            <div class="progress-step" data-step="1">Bab I</div>
+            <div class="progress-step" data-step="2">Bab II</div>
+            <div class="progress-step" data-step="3">Bab III</div>
+            <div class="progress-step" data-step="4">Bab IV</div>
+            <div class="progress-step" data-step="5">Selesai</div>
+        </div>
 
-    <section class="bab-section" id="bab1">
-      <h2>📖 Bab I - Pendahuluan</h2>
-      <button onclick="generate('bab1')">🔄 Generate Bab I</button>
-      <div class="output" id="output-bab1"></div>
-    </section>
+        <main id="wizard-container">
+            <!-- Step 0: Informasi Utama -->
+            <div class="wizard-step active" data-step="0">
+                <div class="step-header">
+                    <h2 class="step-title">Selamat Datang, Arsitek.</h2>
+                    <p class="step-subtitle">Mari kita bangun fondasi skripsi Anda. Mulailah dengan informasi dasar ini.</p>
+                </div>
+                <div class="step-content">
+                    <div><label for="mainThesisTopic" class="form-label">Topik Utama Skripsi Hukum</label><input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Data Pribadi di Era Digital" class="form-input"></div>
+                    <div><label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Utama</label><textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana urgensi pembentukan undang-undang..." class="form-input"></textarea></div>
+                </div>
+            </div>
 
-    <section class="bab-section" id="bab2">
-      <h2>📖 Bab II - Tinjauan Pustaka</h2>
-      <button onclick="generate('bab2')">🔄 Generate Bab II</button>
-      <div class="output" id="output-bab2"></div>
-    </section>
+            <!-- Step 1: Bab I -->
+            <div class="wizard-step" data-step="1">
+                <div class="step-header"><h2 class="step-title">Bab I: Pendahuluan</h2><p class="step-subtitle">Berikan poin-poin opsional untuk memandu AI, atau biarkan kosong.</p></div>
+                <div class="step-content">
+                    <div><label for="formLatarBelakang" class="form-label">Latar Belakang (Opsional)</label><textarea id="formLatarBelakang" rows="5" class="form-input"></textarea></div>
+                    <button class="btn-primary w-full mt-4 generate-button" data-chapter="bab1">Bangun Draf Bab I</button>
+                    <div id="result-bab1" class="result-box hidden mt-4"></div>
+                </div>
+            </div>
+            
+            <!-- Step 2, 3, 4 ... (Struktur serupa) -->
+            <div class="wizard-step" data-step="2">
+                 <div class="step-header"><h2 class="step-title">Bab II: Tinjauan Pustaka</h2><p class="step-subtitle">Sebutkan teori atau konsep kunci yang ingin dibahas.</p></div>
+                 <div class="step-content">
+                    <div><label for="mainChapter2Subtopics" class="form-label">Kerangka Teori (Pisahkan koma)</label><input type="text" id="mainChapter2Subtopics" class="form-input"></div>
+                    <button class="btn-primary w-full mt-4 generate-button" data-chapter="bab2">Bangun Draf Bab II</button>
+                    <div id="result-bab2" class="result-box hidden mt-4"></div>
+                 </div>
+            </div>
 
-    <section class="bab-section" id="bab3">
-      <h2>📖 Bab III - Metodologi Penelitian</h2>
-      <button onclick="generate('bab3')">🔄 Generate Bab III</button>
-      <div class="output" id="output-bab3"></div>
-    </section>
+            <div class="wizard-step" data-step="3">
+                <div class="step-header"><h2 class="step-title">Bab III: Metode Penelitian</h2><p class="step-subtitle">Spesifikasikan metodologi Anda.</p></div>
+                 <div class="step-content">
+                    <!-- Semua input untuk Bab 3 di sini -->
+                    <button class="btn-primary w-full mt-4 generate-button" data-chapter="bab3">Bangun Draf Bab III</button>
+                    <div id="result-bab3" class="result-box hidden mt-4"></div>
+                 </div>
+            </div>
+            
+             <div class="wizard-step" data-step="4">
+                <div class="step-header"><h2 class="step-title">Bab IV: Pembahasan</h2><p class="step-subtitle">AI akan membangun analisis berdasarkan fondasi yang telah kita siapkan.</p></div>
+                 <div class="step-content">
+                    <button class="btn-primary w-full mt-4 generate-button" data-chapter="bab4">Bangun Draf Bab IV</button>
+                    <div id="result-bab4" class="result-box hidden mt-4"></div>
+                 </div>
+            </div>
+            
+            <!-- Step 5: Selesai -->
+            <div class="wizard-step" data-step="5">
+                <div class="step-header"><h2 class="step-title">Konstruksi Selesai.</h2><p class="step-subtitle">Draf skripsi Anda telah selesai dibangun. Salin seluruh teks di bawah ini untuk memulai tahap penyuntingan.</p></div>
+                <div class="step-content">
+                    <textarea id="final-output" class="form-input" rows="15" readonly></textarea>
+                    <button id="copyAllBtn" class="btn-secondary w-full mt-4">Salin Seluruh Draf</button>
+                </div>
+            </div>
 
-    <section class="bab-section" id="bab4">
-      <h2>📖 Bab IV - Hasil & Pembahasan</h2>
-      <button onclick="generate('bab4')">🔄 Generate Bab IV</button>
-      <div class="output" id="output-bab4"></div>
-    </section>
-  </main>
+        </main>
 
-  <script src="app.js"></script>
+        <footer class="app-footer">
+            <button id="prev-step-btn" class="btn-secondary">Sebelumnya</button>
+            <button id="next-step-btn" class="btn-primary">Selanjutnya</button>
+        </footer>
+    </div>
+    <script src="js/app.js"></script>
 </body>
 </html>
