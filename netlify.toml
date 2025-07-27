@@ -1,18 +1,9 @@
 [build]
   publish = "public"
   functions = "netlify/functions"
-  command = "npm install"
 
-# VERSI YANG BENAR
 [functions]
-  # Tanda bintang (*) berarti aturan ini berlaku untuk SEMUA fungsi
   "*" = { timeout = 25 }
 
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
-
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-# Perubahan untuk memicu deploy ulang bersih pada 28 Juli
