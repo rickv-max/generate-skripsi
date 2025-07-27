@@ -1,23 +1,93 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f8f9fa;
+  color: #111;
+  padding: 20px;
 }
-.nav-link.active {
+
+header h1 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.nav-link {
+  background: #007bff;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
   font-weight: bold;
-  color: #2563eb;
 }
-.nav-link.completed::after {
-  content: ' ✅';
-  color: green;
+
+.nav-link:hover {
+  background: #0056b3;
 }
-.loading-spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 3px solid rgba(0,0,0,0.1);
-  border-top-color: #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+
+.form-section {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.bab-section {
+  margin-top: 30px;
+}
+
+.bab-section h2 {
+  margin-bottom: 10px;
+}
+
+button {
+  background: #28a745;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #218838;
+}
+
+.output {
+  background: #ffffff;
+  padding: 10px;
+  margin-top: 10px;
+  border-left: 3px solid #007bff;
+  border-radius: 4px;
+  white-space: pre-wrap;
 }
