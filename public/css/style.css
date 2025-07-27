@@ -1,31 +1,343 @@
 :root {
-    --primary-color: #4A90E2; --primary-hover-color: #357ABD;
-    --secondary-color: #6c757d; --secondary-hover-color: #5a6268;
-    --danger-color: #dc3545; --danger-hover-color: #c82333;
-    --text-color: #212529; --bg-light: #F8F9FA;
-    --border-color: #dee2e6; --soft-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --focus-ring-color: rgba(74, 144, 226, 0.25);
+–primary-color: #4A90E2; –primary-hover-color: #357ABD;
+–secondary-color: #6c757d; –secondary-hover-color: #5a6268;
+–danger-color: #dc3545; –danger-hover-color: #c82333;
+–text-color: #212529; –bg-light: #F8F9FA;
+–border-color: #dee2e6; –soft-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+–focus-ring-color: rgba(74, 144, 226, 0.25);
 }
-body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-color); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-.nav-link { display: flex; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: 500; color: #4b5563; transition: background-color 0.2s ease, color 0.2s ease; }
-.nav-link:hover { background-color: #f3f4f6; color: var(--text-color); }
-.nav-link.active { background-color: var(--primary-color); color: white; box-shadow: var(--soft-shadow); }
-.nav-link.completed::after { content: '✔'; margin-left: auto; font-weight: bold; }
-.form-label { display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; }
-.form-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; background-color: #fff; }
-.form-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px var(--focus-ring-color); }
-button { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s; box-shadow: var(--soft-shadow); display: inline-flex; align-items: center; justify-content: center; border: none; }
-button:hover:not(:disabled) { transform: translateY(-2px); }
-button:active { transform: translateY(0); }
-button:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn-primary { background-color: var(--primary-color); color: white; }
-.btn-primary:hover:not(:disabled) { background-color: var(--primary-hover-color); }
-.btn-secondary { background-color: var(--secondary-color); color: white; }
-.btn-secondary:hover:not(:disabled) { background-color: var(--secondary-hover-color); }
-.btn-danger { background-color: var(--danger-color); color: white; }
-.btn-danger:hover:not(:disabled) { background-color: var(--danger-hover-color); }
-.prose h2.chapter-title { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
-.prose pre { white-space: pre-wrap; word-wrap: break-word; background-color: transparent; padding: 0; font-family: 'Inter', sans-serif; font-size: 1rem; }
-.loading-spinner { border: 3px solid rgba(255, 255, 255, 0.3); border-left-color: #ffffff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-right: 0.75rem; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.result-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1.5rem; white-space: pre-wrap; word-wrap: break-word; }
+
+body {
+font-family: ‘Inter’, sans-serif;
+background-color: var(–bg-light);
+color: var(–text-color);
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+
+.nav-link {
+display: flex;
+align-items: center;
+padding: 0.75rem 1rem;
+border-radius: 0.5rem;
+font-weight: 500;
+color: #4b5563;
+transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+background-color: #f3f4f6;
+color: var(–text-color);
+}
+
+.nav-link.active {
+background-color: var(–primary-color);
+color: white;
+box-shadow: var(–soft-shadow);
+}
+
+.nav-link.completed::after {
+content: ‘✔’;
+margin-left: auto;
+font-weight: bold;
+}
+
+.form-label {
+display: block;
+font-weight: 600;
+color: #374151;
+margin-bottom: 0.5rem;
+}
+
+.form-input {
+width: 100%;
+padding: 0.75rem 1rem;
+border: 1px solid var(–border-color);
+border-radius: 0.5rem;
+font-size: 1rem;
+transition: border-color 0.2s, box-shadow 0.2s;
+background-color: #fff;
+}
+
+.form-input:focus {
+outline: none;
+border-color: var(–primary-color);
+box-shadow: 0 0 0 3px var(–focus-ring-color);
+}
+
+button {
+padding: 0.75rem 1.5rem;
+border-radius: 0.75rem;
+font-weight: 600;
+cursor: pointer;
+transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+box-shadow: var(–soft-shadow);
+display: inline-flex;
+align-items: center;
+justify-content: center;
+border: none;
+}
+
+button:hover:not(:disabled) {
+transform: translateY(-2px);
+}
+
+button:active {
+transform: translateY(0);
+}
+
+button:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+.btn-primary {
+background-color: var(–primary-color);
+color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+background-color: var(–primary-hover-color);
+}
+
+.btn-secondary {
+background-color: var(–secondary-color);
+color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+background-color: var(–secondary-hover-color);
+}
+
+.btn-danger {
+background-color: var(–danger-color);
+color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+background-color: var(–danger-hover-color);
+}
+
+.prose h2.chapter-title {
+font-size: 1.5rem;
+font-weight: 700;
+text-align: center;
+margin-bottom: 1.5rem;
+padding-bottom: 0.5rem;
+border-bottom: 1px solid var(–border-color);
+}
+
+.prose pre {
+white-space: pre-wrap;
+word-wrap: break-word;
+background-color: transparent;
+padding: 0;
+font-family: ‘Inter’, sans-serif;
+font-size: 1rem;
+}
+
+.loading-spinner {
+border: 3px solid rgba(255, 255, 255, 0.3);
+border-left-color: #ffffff;
+border-radius: 50%;
+width: 20px;
+height: 20px;
+animation: spin 1s linear infinite;
+display: inline-block;
+margin-right: 0.75rem;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* PERBAIKAN RESPONSIVITAS UNTUK KOTAK HASIL */
+.result-box {
+background-color: #f9fafb;
+border: 1px solid #e5e7eb;
+border-radius: 0.5rem;
+padding: 1.5rem;
+white-space: pre-wrap;
+word-wrap: break-word;
+/* Pastikan kotak hasil selalu dalam flow normal */
+display: block;
+width: 100%;
+position: relative;
+clear: both;
+margin-top: 1.5rem;
+margin-bottom: 1rem;
+/* Responsif untuk berbagai ukuran layar */
+box-sizing: border-box;
+/* Tambahan untuk scroll jika konten terlalu panjang */
+max-height: 60vh;
+overflow-y: auto;
+}
+
+/* Styling khusus untuk mobile */
+@media (max-width: 768px) {
+.result-box {
+margin-top: 1rem;
+padding: 1rem;
+border-radius: 0.375rem;
+font-size: 0.875rem;
+line-height: 1.5;
+/* Pastikan tidak ada positioning yang aneh */
+position: static;
+/* Lebar penuh pada mobile */
+width: 100%;
+/* Margin horizontal konsisten */
+margin-left: 0;
+margin-right: 0;
+}
+}
+
+/* Styling untuk tablet */
+@media (min-width: 769px) and (max-width: 1023px) {
+.result-box {
+margin-top: 1.25rem;
+padding: 1.25rem;
+max-height: 50vh;
+}
+}
+
+/* Styling untuk desktop */
+@media (min-width: 1024px) {
+.result-box {
+margin-top: 1.5rem;
+padding: 1.5rem;
+max-height: 70vh;
+}
+}
+
+/* Pastikan form-section menggunakan layout yang benar */
+.form-section {
+display: block;
+width: 100%;
+position: relative;
+/* Gunakan flexbox column untuk memastikan urutan yang benar */
+display: flex;
+flex-direction: column;
+}
+
+/* Pastikan main content area responsive */
+main {
+display: flex;
+flex-direction: column;
+width: 100%;
+/* Padding yang konsisten */
+padding: 1rem;
+}
+
+@media (min-width: 640px) {
+main {
+padding: 2rem;
+}
+}
+
+/* Layout khusus untuk desktop dengan sidebar */
+@media (min-width: 1024px) {
+/* Pastikan main content tidak terlalu lebar saat ada sidebar kanan */
+#app.lg\:flex main {
+flex: 1;
+min-width: 0; /* Penting untuk flexbox */
+}
+
+```
+/* Jika ada panel kanan, batasi lebar main */
+#app.lg\\:flex main + aside {
+    flex-shrink: 0;
+}
+```
+
+}
+
+/* Perbaikan untuk scroll container */
+.result-box::-webkit-scrollbar {
+width: 8px;
+}
+
+.result-box::-webkit-scrollbar-track {
+background: #f1f5f9;
+border-radius: 4px;
+}
+
+.result-box::-webkit-scrollbar-thumb {
+background: #cbd5e1;
+border-radius: 4px;
+}
+
+.result-box::-webkit-scrollbar-thumb:hover {
+background: #94a3b8;
+}
+
+/* Pastikan button generate tidak menganggu layout */
+.btn-primary {
+width: 100%;
+margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+.btn-primary {
+width: auto;
+margin-bottom: 0;
+}
+}
+
+/* Fix untuk container utama agar responsif */
+.space-y-4 > *:not([hidden]) {
+margin-top: 0;
+margin-bottom: 1rem;
+}
+
+.space-y-4 > *:not([hidden]) ~ *:not([hidden]) {
+margin-top: 1rem;
+margin-bottom: 0;
+}
+
+/* Pastikan tidak ada elemen yang floating atau positioned absolute yang mengganggu */
+
+- {
+  box-sizing: border-box;
+  }
+
+/* Perbaikan untuk form container */
+.bg-white.p-6.rounded-lg.border.border-gray-200 {
+width: 100%;
+margin-bottom: 1rem;
+}
+
+/* Responsive text sizing */
+@media (max-width: 480px) {
+.result-box {
+font-size: 0.8rem;
+line-height: 1.4;
+padding: 0.75rem;
+}
+
+```
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+}
+
+.form-input {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+}
+```
+
+}
+
+/* Tambahan untuk memastikan layout yang stabil */
+.hidden {
+display: none !important;
+}
+
+.form-section:not(.hidden) {
+display: flex !important;
+flex-direction: column;
+}
