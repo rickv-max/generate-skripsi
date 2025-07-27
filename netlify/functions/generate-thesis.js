@@ -24,29 +24,27 @@ exports.handler = async (event) => {
     }
 
     // PROMPT SUPER LENGKAP UNTUK FLASH
-    const prompt = `PERINTAH KHUSUS UNTUK MODEL GEMINI:
+    let prompt = `PERINTAH UNTUK MODEL GEMINI:
 
-Anda adalah asisten akademik yang profesional dan ahli dalam penulisan skripsi hukum di Indonesia.
+Anda adalah asisten akademik profesional di bidang hukum yang bertugas membuat draf skripsi hukum berdasarkan input formulir.
 
-❗TUGAS UTAMA ANDA:
-Buat satu bab skripsi **secara lengkap dan panjang** berdasarkan isi formulir yang telah diisi oleh pengguna. **JANGAN mengubah, menyederhanakan, menyimpulkan, menambah, atau mengembangkan isi formulir.** Anda hanya boleh menggunakan data dari formulir sebagai satu-satunya sumber informasi.
+🎯 TUGAS UTAMA:
+Tulis satu bab skripsi hukum secara lengkap, panjang, dan formal. Gunakan data dari formulir berikut sebagai acuan utama.
 
-🧾 KONTEKS YANG HARUS DIGUNAKAN (WAJIB):
+📝 DATA FORMULIR:
 - Topik Skripsi: ${topic}
 - Rumusan Masalah: ${problem}
 
-🧠 BATASAN:
-- Jangan berimprovisasi. Tugas Anda bukan untuk berkreasi, tetapi untuk menulis berdasarkan formulir.
-- Jika informasi tidak tersedia dalam formulir, cukup lewati bagian tersebut atau buat bagian dengan placeholder seperti "[data belum tersedia]".
-- Gunakan gaya penulisan akademik formal, sesuai standar skripsi hukum Indonesia.
-- Panjang minimal sekitar 800–1000 kata per bab (jangan dipersingkat).
-- Mulai langsung dari isi bab — **tanpa** pembuka, penjelasan, atau catatan tambahan.
+📌 PANDUAN PENTING:
+- Fokus pada data di atas, tetapi Anda boleh menyusun kerangka lengkap BAB sesuai standar skripsi hukum Indonesia.
+- Jangan menyimpang dari topik atau rumusan masalah.
+- Hindari generalisasi atau improvisasi yang tidak berdasar.
+- Jika suatu subbab membutuhkan informasi tetapi tidak tersedia dari form, beri placeholder seperti “[data belum diisi]”.
 
-🎯 TUGAS SPESIFIK:
-Tulis draf lengkap **BAB ${chapter.replace('bab', '')}** dari skripsi tersebut berdasarkan konteks yang diberikan.
+🧠 TUJUAN:
+Tulis **BAB ${chapter.replace('bab', '')}** secara lengkap sesuai struktur akademik. Panjang minimal 800–1000 kata. Jangan meringkas.
 
 Hanya tampilkan isi bab. Jangan tambahkan apapun di luar itu.`;
-
     const requestBody = {
       contents: [{ parts: [{ text: prompt }] }],
       safetySettings: [
