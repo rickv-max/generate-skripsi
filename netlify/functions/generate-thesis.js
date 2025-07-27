@@ -3,18 +3,33 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
+    // Hanya izinkan metode POST
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
+    // Ambil API Key dari environment variables di Netlify
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     if (!GEMINI_API_KEY) {
-        return { statusCode: 500, body: JSON.stringify({ error: 'Konfigurasi server error: GEMINI_API_KEY tidak ditemukan.' }) };
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Konfigurasi server error: GEMINI_API_KEY tidak ditemukan.' }),
+        };
     }
 
     try {
+        // Ambil data terstruktur dari frontend
         const { topic, problem, chapter, details } = JSON.parse(event.body);
 
+        // Pastikan data yang dibutuhkan ada
+        if (!topic || !problem || !chapter) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'Data tidak lengkap. Topik, rumusan masalah, dan bab dibutuhkan.' }),
+            };
+        }
+
+        // Bangun prompt (perintah) untuk Gemini berdasarkan bab yang diminta
         let prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
         Tugas Anda adalah membuat draf akademis yang sistematis, logis, dan menggunakan bahasa Indonesia yang baik dan benar.
 
@@ -24,7 +39,7 @@ exports.handler = async (event) => {
 
         Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi berikut:\n\n`;
 
-        // ... (switch case untuk semua bab tetap sama seperti sebelumnya)
+        // Bagian "otak" untuk meracik prompt per bab
         switch (chapter) {
             case 'bab1':
                 prompt += `BAB I - PENDAHULUAN:
@@ -55,9 +70,7 @@ exports.handler = async (event) => {
                 throw new Error('Chapter tidak valid');
         }
 
-        // =====================================================================
-        // PERUBAHAN KRUSIAL ADA DI SINI: Menambahkan safetySettings
-        // =====================================================================
+        // Bungkus prompt ke dalam format JSON yang benar, termasuk safety settings
         const requestBody = {
             contents: [{
                 parts: [{
@@ -82,30 +95,22 @@ exports.handler = async (event) => {
 
         const responseData = await apiResponse.json();
 
-        // =====================================================================
-        // PERUBAHAN KEDUA: LOGGING UNTUK DEBUGGING
-        // Ini akan mencetak seluruh respons dari Gemini ke log Netlify Anda
-        // =====================================================================
-        console.log('Respons Mentah dari Gemini:', JSON.stringify(responseData, null, 2));
-
-
-        // Cek jika kandidat ada dan memiliki konten, jika tidak, anggap sebagai error
-        if (responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content && responseData.candidates[0].content.parts) {
+        // Cek jika respons dari Gemini valid
+        if (responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts) {
             const generatedText = responseData.candidates[0].content.parts[0].text;
             return {
                 statusCode: 200,
                 body: JSON.stringify({ text: generatedText }),
             };
         } else {
-            // Ini menangani kasus jika Gemini memblokir karena alasan keamanan atau lainnya
-            const blockReason = responseData.candidates?.[0]?.finishReason || 'Unknown reason';
-            const safetyMessage = responseData.promptFeedback?.blockReason || 'No specific safety feedback.';
-            console.error(`Konten diblokir oleh Gemini. Alasan: ${blockReason}. Detail: ${safetyMessage}`);
-            throw new Error(`Permintaan berhasil diproses, tetapi Gemini tidak menghasilkan konten. Kemungkinan karena filter keamanan. Alasan: ${blockReason}`);
+            // Jika Gemini tidak mengembalikan konten
+            const reason = responseData.promptFeedback?.blockReason || responseData.candidates?.[0]?.finishReason || 'Unknown reason';
+            console.error(`Gemini tidak menghasilkan konten. Alasan: ${reason}. Respons penuh:`, JSON.stringify(responseData));
+            throw new Error(`Gemini tidak menghasilkan konten. Kemungkinan karena filter keamanan. Alasan: ${reason}`);
         }
 
     } catch (error) {
-        console.error('Error di dalam Netlify function:', error.message);
+        console.error('Error fatal di dalam Netlify function:', error.message);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: error.message }),
