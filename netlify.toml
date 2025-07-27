@@ -1,7 +1,7 @@
 [build]
   publish = "public"
   functions = "netlify/functions"
-  command = "echo 'No build command needed for static site + functions'" # Atau tambahkan `npm install` jika ada dependensi frontend
+  command = "npm install --prefix netlify/functions && echo 'Frontend build (if any) or static site is ready'"
 
 [[redirects]]
   from = "/.netlify/functions/*"
