@@ -37,44 +37,74 @@ Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi ber
 
     let instruksiBab = '';
 
-    switch (chapter) {
-      case 'bab1':
-        instruksiBab = `BAB I - PENDAHULUAN:
-1.1 Latar Belakang: Jelaskan secara utuh pentingnya penelitian dengan topik "${topic}". ${details.latarBelakang ? `Gunakan draf awal ini: "${details.latarBelakang}"` : ''}
-1.2 Rumusan Masalah: Rumuskan masalah yang diteliti dengan jelas dan terstruktur.
-1.3 Tujuan Penelitian: Jabarkan secara eksplisit tujuan dari penelitian ini. ${details.tujuanPenelitian ? `Gunakan draf awal ini: "${details.tujuanPenelitian}"` : ''}
-1.4 Kontribusi Penelitian: Jelaskan kontribusi teoretis dan praktis dari penelitian ini.
-1.5 Orisinalitas Penelitian: Berikan analisis orisinalitas dengan format tabel atau narasi.`;
-        break;
+    if (!subbab) {
+  return {
+    statusCode: 400,
+    body: JSON.stringify({ error: 'Subbab tidak ditentukan. Kirim subbab seperti "1.1" atau "3.4"' }),
+  };
+}
 
-      case 'bab2':
-        instruksiBab = `BAB II - TINJAUAN PUSTAKA:
-2.1 Tinjauan Umum terkait topik "${topic}".
-2.2 Bahas teori, asas, konsep, dan doktrin yang relevan.
-2.3 Bahas penelitian terdahulu dan posisikan penelitian ini secara ilmiah.
-${details.subtopics ? `Fokuskan bahasan pada subtopik: ${details.subtopics}.` : ''}`;
-        break;
+let instruksiBab = '';
 
-      case 'bab3':
-        instruksiBab = `BAB III - METODE PENELITIAN:
-3.1 Pendekatan Penelitian: ${details.pendekatan || 'Jelaskan pendekatan yang digunakan (misalnya normatif, empiris, atau campuran).'}
-3.2 Jenis Penelitian: ${details.jenis || 'Jelaskan jenis penelitian dan alasan pemilihannya.'}
-3.3 Lokasi Penelitian: ${details.lokasi || 'Sebutkan lokasi penelitian jika relevan.'}
-3.4 Metode Pengumpulan Data: ${details.metodePengumpulanData || 'Jelaskan teknik pengumpulan data yang digunakan.'}
-3.5 Teknik Analisis Data: ${details.modelAnalisis || 'Jelaskan metode analisis yang digunakan untuk mengolah data.'}`;
-        break;
+switch (subbab) {
+  case '1.1':
+    instruksiBab = `1.1 Latar Belakang: Jelaskan secara utuh pentingnya penelitian dengan topik "${topic}". ${details.latarBelakang ? `Gunakan draf awal ini: "${details.latarBelakang}"` : ''}`;
+    break;
+  case '1.2':
+    instruksiBab = `1.2 Rumusan Masalah: Rumuskan masalah yang diteliti secara eksplisit dan sistematis dari topik "${topic}".`;
+    break;
+  case '1.3':
+    instruksiBab = `1.3 Tujuan Penelitian: Jelaskan tujuan penelitian dari rumusan masalah "${problem}". ${details.tujuanPenelitian ? `Gunakan draf awal ini: "${details.tujuanPenelitian}"` : ''}`;
+    break;
+  case '1.4':
+    instruksiBab = `1.4 Kontribusi Penelitian: Jelaskan kontribusi ilmiah dan praktis dari penelitian ini terhadap bidang hukum.`;
+    break;
+  case '1.5':
+    instruksiBab = `1.5 Orisinalitas Penelitian: Berikan analisis orisinalitas topik "${topic}", baik dalam bentuk narasi atau tabel, dibandingkan dengan penelitian terdahulu.`;
+    break;
+  
+  case '2.1':
+    instruksiBab = `2.1 Tinjauan Umum tentang "${topic}" dari perspektif hukum.`;
+    break;
+  case '2.2':
+    instruksiBab = `2.2 Bahas teori, asas, dan doktrin hukum yang relevan dengan topik "${topic}".`;
+    break;
+  case '2.3':
+    instruksiBab = `2.3 Tinjau penelitian terdahulu, dan posisikan penelitian ini secara akademik.`;
+    break;
 
-      case 'bab4':
-        instruksiBab = `BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
-4.1 Paparkan hasil temuan atau uraian analisis terhadap "${problem}".
-4.2 Kaji dan hubungkan dengan teori-teori dalam Bab II.
-4.3 Sajikan contoh kasus, regulasi, atau putusan pengadilan jika relevan.
-4.4 Jelaskan secara logis bagaimana jawaban terhadap rumusan masalah dibangun.`;
-        break;
+  case '3.1':
+    instruksiBab = `3.1 Pendekatan Penelitian: ${details.pendekatan || 'Jelaskan pendekatan normatif, empiris, atau campuran yang digunakan.'}`;
+    break;
+  case '3.2':
+    instruksiBab = `3.2 Jenis Penelitian: ${details.jenis || 'Uraikan jenis penelitian hukum yang digunakan dan alasan pemilihannya.'}`;
+    break;
+  case '3.3':
+    instruksiBab = `3.3 Lokasi Penelitian: ${details.lokasi || 'Sebutkan lokasi penelitian, jika relevan (terutama untuk metode empiris).'}`;
+    break;
+  case '3.4':
+    instruksiBab = `3.4 Metode Pengumpulan Data: ${details.metodePengumpulanData || 'Jelaskan teknik wawancara, studi dokumen, observasi, atau lainnya yang digunakan.'}`;
+    break;
+  case '3.5':
+    instruksiBab = `3.5 Teknik Analisis Data: ${details.modelAnalisis || 'Jelaskan metode analisis data hukum, baik normatif atau empiris.'}`;
+    break;
 
-      default:
-        throw new Error('Chapter tidak valid');
-    }
+  case '4.1':
+    instruksiBab = `4.1 Paparkan hasil analisis atau temuan penelitian terkait rumusan masalah "${problem}".`;
+    break;
+  case '4.2':
+    instruksiBab = `4.2 Bahas hubungan antara temuan dan teori-teori hukum yang sudah dijelaskan sebelumnya.`;
+    break;
+  case '4.3':
+    instruksiBab = `4.3 Sajikan contoh kasus, putusan pengadilan, atau regulasi yang relevan dengan topik "${topic}".`;
+    break;
+  case '4.4':
+    instruksiBab = `4.4 Berikan pembahasan sistematis bagaimana temuan menjawab rumusan masalah.`;
+    break;
+
+  default:
+    throw new Error('Subbab tidak valid');
+}
 
     const requestBody = {
       contents: [{
