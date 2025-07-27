@@ -178,9 +178,6 @@ button:disabled {
     100% { transform: rotate(360deg); }
 }
 
-#sidebar.open {
-    transform: translateX(0);
-}
 
 #sidebar .btn-secondary, #sidebar .btn-danger {
     padding-top: 0.75rem;
