@@ -1,9 +1,10 @@
 [build]
-  publish = "public"
-  functions = "netlify/functions"
-  command = "npm install --prefix netlify/functions && echo 'Frontend build (if any) or static site is ready'"
+      publish = "public"
+      functions = "netlify/functions"
+      command = "echo 'Static site and functions ready for deployment'" # Biarkan ini sederhana
 
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+    [[redirects]]
+      from = "/.netlify/functions/*"
+      to = "/.netlify/functions/:splat"
+      status = 200
+    ```
