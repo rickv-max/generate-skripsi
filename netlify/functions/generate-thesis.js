@@ -14,7 +14,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { topic, problem, chapter, details } = JSON.parse(event.body);
+    const { topic, problem, chapter, details, subbab } = JSON.parse(event.body);
 
     if (!topic || !problem || !chapter) {
       return {
