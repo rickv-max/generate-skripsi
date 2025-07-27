@@ -1,10 +1,15 @@
 :root {
-–primary-color: #4A90E2; –primary-hover-color: #357ABD;
-–secondary-color: #6c757d; –secondary-hover-color: #5a6268;
-–danger-color: #dc3545; –danger-hover-color: #c82333;
-–text-color: #212529; –bg-light: #F8F9FA;
-–border-color: #dee2e6; –soft-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-–focus-ring-color: rgba(74, 144, 226, 0.25);
+  --primary-color: #4A90E2;
+  --primary-hover-color: #357ABD;
+  --secondary-color: #6c757d;
+  --secondary-hover-color: #5a6268;
+  --danger-color: #dc3545;
+  --danger-hover-color: #c82333;
+  --text-color: #212529;
+  --bg-light: #F8F9FA;
+  --border-color: #dee2e6;
+  --soft-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --focus-ring-color: rgba(74, 144, 226, 0.25);
 }
 body { font-family: ‘Inter’, sans-serif; background-color: var(–bg-light); color: var(–text-color); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .nav-link { display: flex; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: 500; color: #4b5563; transition: background-color 0.2s ease, color 0.2s ease; }
