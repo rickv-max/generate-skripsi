@@ -15,6 +15,12 @@
     <div class="container">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Pembuat Draf Skripsi Hukum Otomatis</h1>
 
+        <p class="text-gray-600 mb-6 text-center">
+            Isi "Topik Skripsi" dan "Sub-bab Tambahan BAB II". Untuk bagian lainnya, Anda bisa memberikan draf awal Anda, atau biarkan kosong agar AI yang menghasilkan dari awal.
+            <br>
+            **Penting:** Buat draf bab secara berurutan (BAB I, lalu BAB II, dst.) agar hasilnya logis dan terhubung.
+        </p>
+
         <div class="mb-4">
             <label for="thesisTopic" class="block text-sm font-medium text-gray-700">Topik Skripsi Hukum (Contoh: Perlindungan Hukum Konsumen dalam Transaksi E-commerce):</label>
             <input type="text" id="thesisTopic" placeholder="Masukkan topik skripsi Anda" class="rounded-lg">
@@ -25,13 +31,82 @@
             <input type="text" id="chapter2Subtopics" placeholder="Masukkan sub-bab tambahan untuk Bab II" class="rounded-lg">
         </div>
 
-        <div class="mb-6 flex space-x-4">
-            <button id="generateBtn" class="btn-primary flex items-center justify-center">
-                <span id="buttonText">Buat Draf Skripsi</span>
-                <div id="loadingSpinner" class="loading-spinner hidden"></div>
-            </button>
-            <button id="copyBtn" class="btn-secondary" style="display: none;">Salin Skripsi</button>
+        <!-- Input untuk BAB I -->
+        <div class="mb-4">
+            <label for="inputLatarBelakang" class="block text-sm font-medium text-gray-700">1.1 Latar Belakang (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputLatarBelakang" rows="5" placeholder="Tuliskan poin-poin penting atau draf awal latar belakang di sini."></textarea>
         </div>
+        <div class="mb-4">
+            <label for="inputRumusanMasalah" class="block text-sm font-medium text-gray-700">1.2 Rumusan Masalah (Opsional: Berikan draf awal Anda, dalam bentuk pertanyaan):</label>
+            <textarea id="inputRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana efektivitas perlindungan hukum konsumen dalam transaksi e-commerce?"></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputTujuanPenelitian" class="block text-sm font-medium text-gray-700">1.3 Tujuan Penelitian (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputTujuanPenelitian" rows="3" placeholder="Contoh: Untuk menganalisis efektivitas perlindungan hukum konsumen..."></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputKontribusiPenelitian" class="block text-sm font-medium text-gray-700">1.4 Kontribusi Penelitian (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputKontribusiPenelitian" rows="4" placeholder="Uraikan kontribusi penelitian ini terhadap ilmu hukum, praktik, atau kebijakan publik."></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputOrisinalitasPenelitian" class="block text-sm font-medium text-gray-700">1.5 Orisinalitas Penelitian (Opsional: Berikan draf awal tabel perbandingan):</label>
+            <textarea id="inputOrisinalitasPenelitian" rows="6" placeholder="Sajikan data dalam format tabel Markdown, contoh:&#10;| No | Nama Penelitian | Judul | Persamaan | Perbedaan |&#10;|----|-----------------|-------|-----------|-----------|&#10;| 1  | Penelitian A    | ...   | ...       | ...       |"></textarea>
+        </div>
+
+        <!-- Input untuk BAB II -->
+        <div class="mb-4">
+            <label for="inputTinjauanUmum" class="block text-sm font-medium text-gray-700">2.1 Tinjauan Umum (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputTinjauanUmum" rows="5" placeholder="Jelaskan konsep, teori, dan prinsip dasar yang relevan."></textarea>
+        </div>
+        <!-- Sub-bab tambahan dari user akan tetap dihasilkan AI -->
+
+        <!-- Input untuk BAB III -->
+        <div class="mb-4">
+            <label for="inputPendekatanPenelitian" class="block text-sm font-medium text-gray-700">3.1 Pendekatan Penelitian (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputPendekatanPenelitian" rows="3" placeholder="Contoh: Yuridis normatif, yuridis empiris, atau socio-legal."></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputJenisPenelitian" class="block text-sm font-medium text-gray-700">3.2 Jenis Penelitian (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputJenisPenelitian" rows="3" placeholder="Contoh: Deskriptif, eksplanatif, atau preskriptif."></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputLokasiPenelitian" class="block text-sm font-medium text-gray-700">3.3 Lokasi Penelitian (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputLokasiPenelitian" rows="3" placeholder="Sebutkan tempat/lokasi penelitian, atau 'dilakukan melalui studi pustaka'."></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputMetodePengumpulanData" class="block text-sm font-medium text-gray-700">3.4 Metode Pengumpulan Data (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputMetodePengumpulanData" rows="3" placeholder="Contoh: Studi dokumen, wawancara, atau observasi."></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="inputModelAnalisisData" class="block text-sm font-medium text-gray-700">3.5 Model Analisis Data (Opsional: Berikan draf awal Anda):</label>
+            <textarea id="inputModelAnalisisData" rows="3" placeholder="Contoh: Kualitatif deskriptif, induktif-deduktif, atau hermeneutika hukum."></textarea>
+        </div>
+
+        <div class="mb-6 flex space-x-4 justify-center">
+            <button id="generateBab1Btn" class="btn-primary flex items-center justify-center">
+                <span id="buttonTextBab1">Buat BAB I</span>
+                <div id="loadingSpinnerBab1" class="loading-spinner hidden"></div>
+            </button>
+            <button id="generateBab2Btn" class="btn-primary flex items-center justify-center">
+                <span id="buttonTextBab2">Buat BAB II</span>
+                <div id="loadingSpinnerBab2" class="loading-spinner hidden"></div>
+            </button>
+        </div>
+        <div class="mb-6 flex space-x-4 justify-center">
+            <button id="generateBab3Btn" class="btn-primary flex items-center justify-center">
+                <span id="buttonTextBab3">Buat BAB III</span>
+                <div id="loadingSpinnerBab3" class="loading-spinner hidden"></div>
+            </button>
+            <button id="generateBab4Btn" class="btn-primary flex items-center justify-center">
+                <span id="buttonTextBab4">Buat BAB IV</span>
+                <div id="loadingSpinnerBab4" class="loading-spinner hidden"></div>
+            </button>
+        </div>
+        <div class="mb-6 flex space-x-4 justify-center">
+            <button id="copyAllBtn" class="btn-secondary" style="display: none;">Salin Seluruh Skripsi</button>
+            <button id="clearAllBtn" class="btn-secondary" style="display: none;">Bersihkan Output</button>
+        </div>
+
 
         <div id="output" class="output-section hidden">
             <h2 class="text-xl font-bold text-gray-800 mb-4">Draf Skripsi yang Dihasilkan:</h2>
