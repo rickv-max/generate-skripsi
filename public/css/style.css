@@ -33,6 +33,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .prose h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
 .prose pre { white-space: pre-wrap; word-wrap: break-word; background-color: transparent; padding: 0; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-muted); }
+
 .result-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -44,3 +45,29 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .result-card h3 { font-size: 1.125rem; font-weight: 600; color: var(--accent-blue); }
 .result-card pre { margin-top: 1rem; white-space: pre-wrap; word-wrap: break-word; color: var(--text-muted); }
+@media (max-width: 1024px) {
+    .result-card {
+        padding: 1rem;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .result-card h3 {
+        font-size: 1rem;
+    }
+    .result-card pre {
+        font-size: 0.95rem;
+    }
+    #result-container {
+        padding-bottom: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .result-card {
+        padding: 0.875rem;
+        font-size: 0.9rem;
+    }
+    .result-card h3 {
+        font-size: 0.95rem;
+    }
+}
