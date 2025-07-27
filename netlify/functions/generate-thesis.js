@@ -1,3 +1,5 @@
+// netlify/functions/generate-thesis.js (VERSI FINAL DENGAN LOGIKA SWITCH...CASE LENGKAP)
+
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
@@ -14,7 +16,8 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { topic, problem, chapter } = JSON.parse(event.body);
+    // Mengambil payload LENGKAP dari frontend, termasuk 'details'
+    const { topic, problem, chapter, details } = JSON.parse(event.body);
 
     if (!topic || !problem || !chapter) {
       return {
@@ -23,42 +26,60 @@ exports.handler = async (event) => {
       };
     }
 
-    // PROMPT SUPER LENGKAP UNTUK FLASH
-    let prompt = `PERINTAH UNTUK MODEL GEMINI:
+    // =====================================================================
+    // INI ADALAH "OTAK" YANG HILANG DARI KODE ANDA SEBELUMNYA
+    // =====================================================================
+    let prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
+Tugas Anda adalah membuat draf akademis secara **lengkap, utuh, tidak diringkas**, dan sesuai struktur formal skripsi hukum di Indonesia.
+Gunakan bahasa akademik yang logis, sistematis, dan formal.
 
-Anda adalah asisten akademik profesional di bidang hukum yang bertugas membuat draf skripsi hukum berdasarkan input formulir.
+Konteks Utama:
+- Topik Skripsi: "${topic}"
+- Rumusan Masalah Utama: "${problem}"
 
-🎯 TUGAS UTAMA:
-Tulis satu bab skripsi hukum secara lengkap, panjang, dan formal. Gunakan data dari formulir berikut sebagai acuan utama.
+Tugas Spesifik: Buatkan **draf lengkap** untuk **BAB ${chapter.replace('bab','')}** dari skripsi hukum, dengan instruksi spesifik berikut:\n\n`;
 
-📝 DATA FORMULIR:
-- Topik Skripsi: ${topic}
-- Rumusan Masalah: ${problem}
+    // Logika SWITCH...CASE untuk membangun prompt yang spesifik
+    switch (chapter) {
+        case 'bab1':
+            prompt += `Struktur BAB I - PENDAHULUAN:
+            - Buat sub-bab 1.1 Latar Belakang yang detail. ${details.latarBelakang ? `Gunakan draf awal ini sebagai inspirasi utama: "${details.latarBelakang}"` : ''}
+            - Buat sub-bab 1.2 Rumusan Masalah.
+            - Buat sub-bab 1.3 Tujuan Penelitian yang relevan. ${details.tujuanPenelitian ? `Gunakan draf awal ini sebagai inspirasi utama: "${details.tujuanPenelitian}"` : ''}
+            - Buat sub-bab 1.4 Kontribusi Penelitian.`;
+            break;
+        case 'bab2':
+            prompt += `Struktur BAB II - TINJAUAN PUSTAKA:
+            - Buat Tinjauan Umum yang menjelaskan konsep dasar terkait "${topic}".
+            - Bahas secara mendalam teori, asas, dan konsep relevan lainnya. ${details.subtopics ? `Berikan fokus khusus pada sub-topik berikut: ${details.subtopics}.` : ''}`;
+            break;
+        case 'bab3':
+            prompt += `Struktur BAB III - METODE PENELITIAN:
+            - Jelaskan metode penelitian hukum yang paling sesuai.
+            - Buat sub-bab 3.1 Pendekatan Penelitian. ${details.pendekatan ? `Gunakan preferensi pengguna ini: "${details.pendekatan}"` : 'Sarankan pendekatan yang paling cocok (misal: yuridis normatif).'}
+            - Buat sub-bab 3.2 Jenis Penelitian. ${details.jenis ? `Gunakan preferensi pengguna ini: "${details.jenis}"` : 'Sarankan jenis penelitian (misal: deskriptif analitis).'}
+            - Buat sub-bab 3.3 Lokasi Penelitian. ${details.lokasi ? `Gunakan preferensi pengguna ini: "${details.lokasi}"` : 'Sebutkan bahwa penelitian ini adalah studi kepustakaan jika tidak ada lokasi spesifik.'}
+            - Buat sub-bab 3.4 Metode Pengumpulan Data. ${details.metodePengumpulanData ? `Gunakan preferensi pengguna ini: "${details.metodePengumpulanData}"` : 'Jelaskan metode studi dokumen/kepustakaan.'}
+            - Buat sub-bab 3.5 Model Analisis Data. ${details.modelAnalisis ? `Gunakan preferensi pengguna ini: "${details.modelAnalisis}"` : 'Jelaskan metode analisis data kualitatif.'}`;
+            break;
+        case 'bab4':
+            prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
+            - Buat struktur pembahasan yang logis untuk menjawab secara tuntas rumusan masalah: "${problem}".
+            - Sajikan analisis yang mendalam dan kritis.`;
+            break;
+        default:
+            throw new Error('Chapter tidak valid');
+    }
 
-📌 PANDUAN PENTING:
-- Fokus pada data di atas, tetapi Anda boleh menyusun kerangka lengkap BAB sesuai standar skripsi hukum Indonesia.
-- Jangan menyimpang dari topik atau rumusan masalah.
-- Hindari generalisasi atau improvisasi yang tidak berdasar.
-- Jika suatu subbab membutuhkan informasi tetapi tidak tersedia dari form, beri placeholder seperti “[data belum diisi]”.
-
-🧠 TUJUAN:
-Tulis **BAB ${chapter.replace('bab', '')}** secara lengkap sesuai struktur akademik. Panjang minimal 800–1000 kata. Jangan meringkas.
-
-Hanya tampilkan isi bab. Jangan tambahkan apapun di luar itu.`;
     const requestBody = {
-      contents: [{ parts: [{ text: prompt }] }],
+      contents: [ { parts: [{ text: prompt }] } ],
       safetySettings: [
         { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
       ],
-      generationConfig: {
-        temperature: 0.9,
-        topK: 0,
-        topP: 0.95,
-        maxOutputTokens: 8192
-      }
+      generationConfig: { "temperature": 0.8, "topP": 0.95, "maxOutputTokens": 8192 }
     };
 
     const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
@@ -70,24 +91,16 @@ Hanya tampilkan isi bab. Jangan tambahkan apapun di luar itu.`;
     });
 
     const responseData = await apiResponse.json();
-    console.log('📦 RESPONSE DARI GEMINI:', JSON.stringify(responseData, null, 2));
 
-    if (responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts) {
+    if ( responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts ) {
       const generatedText = responseData.candidates[0].content.parts[0].text;
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ text: generatedText })
-      };
+      return { statusCode: 200, body: JSON.stringify({ text: generatedText }) };
     } else {
       const reason = responseData.promptFeedback?.blockReason || responseData.candidates?.[0]?.finishReason || 'Unknown reason';
-      console.error('⚠️ GAGAL GENERATE DARI GEMINI:', reason);
       throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
     }
   } catch (error) {
-    console.error('🔥 ERROR UTAMA:', error.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
+    console.error('Terjadi error:', error.message);
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };
