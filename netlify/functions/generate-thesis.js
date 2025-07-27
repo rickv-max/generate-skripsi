@@ -24,22 +24,28 @@ exports.handler = async (event) => {
     }
 
     // PROMPT SUPER LENGKAP UNTUK FLASH
-    const prompt = `PERHATIAN: Anda adalah asisten profesional penulisan skripsi hukum di Indonesia.
+    const prompt = `PERINTAH KHUSUS UNTUK MODEL GEMINI:
 
-Tugas Anda adalah membuat satu **bab lengkap** dari skripsi hukum secara utuh, panjang, dan sistematis — sesuai kaidah akademik di fakultas hukum Indonesia. TIDAK BOLEH meringkas, menyederhanakan, atau melewatkan bagian penting.
+Anda adalah asisten akademik yang profesional dan ahli dalam penulisan skripsi hukum di Indonesia.
 
-Gunakan gaya bahasa akademik, lugas, netral, dan berdasarkan teori hukum yang berlaku.
+❗TUGAS UTAMA ANDA:
+Buat satu bab skripsi **secara lengkap dan panjang** berdasarkan isi formulir yang telah diisi oleh pengguna. **JANGAN mengubah, menyederhanakan, menyimpulkan, menambah, atau mengembangkan isi formulir.** Anda hanya boleh menggunakan data dari formulir sebagai satu-satunya sumber informasi.
 
-JANGAN membuat isi di luar topik yang diberikan. Fokus hanya pada konteks yang sudah ditentukan di bawah ini.
+🧾 KONTEKS YANG HARUS DIGUNAKAN (WAJIB):
+- Topik Skripsi: ${topic}
+- Rumusan Masalah: ${problem}
 
-KONTEKS:
-- Topik utama skripsi: "${topic}"
-- Rumusan masalah: "${problem}"
+🧠 BATASAN:
+- Jangan berimprovisasi. Tugas Anda bukan untuk berkreasi, tetapi untuk menulis berdasarkan formulir.
+- Jika informasi tidak tersedia dalam formulir, cukup lewati bagian tersebut atau buat bagian dengan placeholder seperti "[data belum tersedia]".
+- Gunakan gaya penulisan akademik formal, sesuai standar skripsi hukum Indonesia.
+- Panjang minimal sekitar 800–1000 kata per bab (jangan dipersingkat).
+- Mulai langsung dari isi bab — **tanpa** pembuka, penjelasan, atau catatan tambahan.
 
-TUGAS:
-Tulis draf lengkap untuk **BAB ${chapter.replace('bab', '')}** dari skripsi hukum tersebut. Struktur dan panjang harus seperti skripsi nyata. Jangan berikan ringkasan, catatan, disclaimer, atau teks tambahan.
+🎯 TUGAS SPESIFIK:
+Tulis draf lengkap **BAB ${chapter.replace('bab', '')}** dari skripsi tersebut berdasarkan konteks yang diberikan.
 
-Langsung mulai dari isi BAB tersebut seolah-olah ini akan dikumpulkan kepada dosen pembimbing.`;
+Hanya tampilkan isi bab. Jangan tambahkan apapun di luar itu.`;
 
     const requestBody = {
       contents: [{ parts: [{ text: prompt }] }],
