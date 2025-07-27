@@ -18,8 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cache elemen DOM utama
     const navLinks = document.querySelectorAll('.nav-link');
-    const formSections = document.querySelectorAll('.form-section');
+    const formContainer = document.getElementById('form-container');
+    const mobileResultView = document.getElementById('mobile-result-view');
     const thesisContentEl = document.getElementById('thesisContent');
+    const mobileThesisContentEl = document.getElementById('mobile-thesisContent');
+    const backToFormBtn = document.getElementById('backToFormBtn');
     const copyAllBtn = document.getElementById('copyAllBtn');
     const clearAllBtn = document.getElementById('clearAllBtn');
 
@@ -31,8 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarOverlay = document.getElementById('sidebar-overlay');
 
     // =================================================
-    // BAGIAN 2: Logika untuk Menu Mobile Responsif
+    // BAGIAN 2: Fungsi Inti Aplikasi
     // =================================================
+
+    // Fungsi untuk menu mobile
     const toggleMenu = () => {
         sidebar.classList.toggle('-translate-x-full');
         sidebar.classList.toggle('translate-x-0');
@@ -41,16 +46,23 @@ document.addEventListener('DOMContentLoaded', () => {
         menuCloseIcon.classList.toggle('hidden');
     };
 
-    mobileMenuButton.addEventListener('click', toggleMenu);
-    sidebarOverlay.addEventListener('click', toggleMenu);
+    // Fungsi untuk menampilkan/menyembunyikan view di mobile
+    const showResultView = () => {
+        if (window.innerWidth < 1024) { // Breakpoint lg: 1024px
+            formContainer.classList.add('hidden');
+            mobileResultView.classList.remove('hidden');
+        }
+    };
+    const showFormView = () => {
+        formContainer.classList.remove('hidden');
+        mobileResultView.classList.add('hidden');
+    };
 
-    // =================================================
-    // BAGIAN 3: Fungsi Inti Aplikasi
-    // =================================================
-
+    // Fungsi untuk berpindah antar form bab
     const switchView = (targetId) => {
+        showFormView(); // Selalu pastikan form terlihat saat berganti bab
+        const formSections = formContainer.querySelectorAll('.form-section');
         formSections.forEach(section => section.classList.add('hidden'));
-        
         const targetSection = document.getElementById(targetId);
         if (targetSection) {
             targetSection.classList.remove('hidden');
@@ -62,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.classList.add('active');
             }
         });
-
         appState.currentView = targetId;
 
         if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
@@ -70,40 +81,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Fungsi untuk mengupdate konten hasil
     const updatePreview = () => {
         let fullText = '';
         let hasContent = false;
-        
         const renderChapter = (title, content) => `<h2>${title}</h2><pre class="whitespace-pre-wrap break-words">${content}</pre>`;
+        
+        if (appState.generated.bab1) { fullText += renderChapter('BAB I PENDAHULUAN', appState.generated.bab1); hasContent = true; }
+        if (appState.generated.bab2) { fullText += renderChapter('BAB II TINJAUAN PUSTAKA', appState.generated.bab2); hasContent = true; }
+        if (appState.generated.bab3) { fullText += renderChapter('BAB III METODE PENELITIAN', appState.generated.bab3); hasContent = true; }
+        if (appState.generated.bab4) { fullText += renderChapter('BAB IV HASIL DAN PEMBAHASAN', appState.generated.bab4); hasContent = true; }
+        
+        const placeholder = `<p class="text-gray-500">Draf akan muncul di sini...</p>`;
+        const styledText = hasContent ? fullText.replace(/<h2>/g, '<h2 class="chapter-title">') : placeholder;
 
-        if(appState.generated.bab1) {
-            fullText += renderChapter('BAB I PENDAHULUAN', appState.generated.bab1);
-            hasContent = true;
-        }
-        if(appState.generated.bab2) {
-            fullText += renderChapter('BAB II TINJAUAN PUSTAKA', appState.generated.bab2);
-            hasContent = true;
-        }
-        if(appState.generated.bab3) {
-            fullText += renderChapter('BAB III METODE PENELITIAN', appState.generated.bab3);
-            hasContent = true;
-        }
-        if(appState.generated.bab4) {
-            fullText += renderChapter('BAB IV HASIL DAN PEMBAHASAN', appState.generated.bab4);
-            hasContent = true;
-        }
+        // Update kedua tempat (panel desktop dan panel mobile)
+        thesisContentEl.innerHTML = styledText;
+        mobileThesisContentEl.innerHTML = styledText;
 
-        if(hasContent) {
-            thesisContentEl.innerHTML = fullText.replace(/<h2>/g, '<h2 class="chapter-title">');
-            copyAllBtn.style.display = 'block';
-            clearAllBtn.style.display = 'block';
+        // Tampilkan/sembunyikan tombol Salin/Bersihkan
+        if (hasContent) {
+            copyAllBtn.style.display = 'flex';
+            clearAllBtn.style.display = 'flex';
         } else {
-            thesisContentEl.innerHTML = `<p class="text-gray-500">Draf yang Anda buat akan muncul di sini...</p>`;
             copyAllBtn.style.display = 'none';
             clearAllBtn.style.display = 'none';
         }
     };
 
+    // Fungsi utama untuk generate
     async function generateChapter(chapter, button) {
         const originalButtonText = button.innerHTML;
         button.disabled = true;
@@ -111,9 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         appState.topic = document.getElementById('mainThesisTopic').value;
         appState.problem = document.getElementById('mainRumusanMasalah').value;
-        
+
         if (!appState.topic || !appState.problem) {
-            alert('Harap isi Topik Skripsi dan Rumusan Masalah Utama pada halaman "Informasi Utama" terlebih dahulu.');
+            alert('Harap isi Topik Skripsi dan Rumusan Masalah Utama terlebih dahulu.');
             button.disabled = false;
             button.innerHTML = originalButtonText;
             switchView('form-home');
@@ -136,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (chapter === 'bab3') {
             payload.details.pendekatan = document.getElementById('formPendekatanPenelitian').value;
             payload.details.jenis = document.getElementById('formJenisPenelitian').value;
-            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value; 
+            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value;
             payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
             payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
         }
@@ -145,32 +151,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/.netlify/functions/generate-thesis', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(payload)
             });
-
             const data = await response.json();
-
-            // Ini adalah baris penting untuk debugging di browser
-            console.log("Data berhasil diterima dari backend:", data);
-
             if (!response.ok) {
-                // Jika server mengembalikan error, tampilkan pesan error dari server
                 throw new Error(data.error || `HTTP error! status: ${response.status}`);
             }
-            
-            // Pastikan data yang diterima memiliki properti 'text'
             if (data.text) {
                 appState.generated[chapter] = data.text;
                 updatePreview();
+                showResultView(); // Tampilkan view hasil di mobile setelah sukses
                 document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
             } else {
-                // Jika tidak ada 'text', berarti ada masalah meskipun status OK
                 throw new Error("Respons dari server tidak berisi teks yang diharapkan.");
             }
-
         } catch (error) {
-            console.error('Error di dalam fungsi generateChapter (frontend):', error);
             alert(`Gagal memproses draf: ${error.message}`);
+            showFormView(); // Jika gagal, pastikan kembali ke tampilan form
         } finally {
             button.disabled = false;
             button.innerHTML = originalButtonText;
@@ -178,9 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================
-    // BAGIAN 4: Event Listeners
+    // BAGIAN 3: Event Listeners
     // =================================================
 
+    // Event listener untuk menu mobile
+    mobileMenuButton.addEventListener('click', toggleMenu);
+    sidebarOverlay.addEventListener('click', toggleMenu);
+    
+    // Event listener untuk tombol kembali dari hasil mobile
+    backToFormBtn.addEventListener('click', showFormView);
+
+    // Event listener untuk navigasi bab
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -188,13 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Event listener untuk tombol Salin & Bersihkan
     copyAllBtn.addEventListener('click', () => {
         const fullText = thesisContentEl.innerText;
         navigator.clipboard.writeText(fullText).then(() => {
             alert('Seluruh draf skripsi berhasil disalin ke clipboard!');
         }).catch(err => {
             alert('Gagal menyalin teks.');
-            console.error('Clipboard copy failed: ', err);
         });
     });
 
@@ -206,13 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Event listener untuk setiap tombol "Buat Bab"
     document.getElementById('generateBab1Btn').addEventListener('click', (e) => generateChapter('bab1', e.currentTarget));
     document.getElementById('generateBab2Btn').addEventListener('click', (e) => generateChapter('bab2', e.currentTarget));
     document.getElementById('generateBab3Btn').addEventListener('click', (e) => generateChapter('bab3', e.currentTarget));
     document.getElementById('generateBab4Btn').addEventListener('click', (e) => generateChapter('bab4', e.currentTarget));
     
     // =================================================
-    // BAGIAN 5: Inisialisasi Aplikasi
+    // BAGIAN 4: Inisialisasi Aplikasi
     // =================================================
     switchView('form-home');
 });
