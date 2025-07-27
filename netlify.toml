@@ -10,3 +10,5 @@
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
+# Tambahkan baris ini di akhir file netlify.toml Anda
+# Perubahan ini untuk memaksa deploy ulang pada 27 Juli
