@@ -1,3 +1,5 @@
+// public/js/app.js (VERSI FINAL - Sidebar Dark Mode dengan Hasil di Bawah)
+
 document.addEventListener('DOMContentLoaded', () => {
     // STATE & CACHE
     const appState = { topic: '', problem: '', generated: {}, currentView: 'form-home' };
@@ -8,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuCloseIcon = document.getElementById('menu-close-icon');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
     const generateButtons = document.querySelectorAll('.generate-button');
+    const copyAllBtn = document.getElementById('copyAllBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
 
     // FUNGSI INTI
     const toggleMenu = () => {
@@ -22,12 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
         const targetSection = document.getElementById(targetId);
         if (targetSection) targetSection.classList.remove('hidden');
+        
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.dataset.target === targetId) link.classList.add('active');
         });
+        
         appState.currentView = targetId;
-        if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) toggleMenu();
+        if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
+            toggleMenu();
+        }
     };
 
     const updateUI = () => {
@@ -37,13 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let fullText = '';
         let hasContent = false;
-        resultContainer.innerHTML = '';
+        resultContainer.innerHTML = ''; // Selalu kosongkan kontainer hasil utama
 
+        // Urutkan bab untuk ditampilkan secara konsisten
         ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
             if (appState.generated[bab]) {
                 const titleMap = { bab1: "BAB I: PENDAHULUAN", bab2: "BAB II: TINJAUAN PUSTAKA", bab3: "BAB III: METODE PENELITIAN", bab4: "BAB IV: PEMBAHASAN" };
                 fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
                 
+                // Buat kartu hasil di kontainer hasil utama
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
                 resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
@@ -54,14 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         desktopPreview.innerHTML = hasContent ? fullText : `<p class="text-muted">Pratinjau keseluruhan akan muncul di sini.</p>`;
-        document.getElementById('copyAllBtn').classList.toggle('hidden', !hasContent);
-        document.getElementById('clearAllBtn').classList.toggle('hidden', !hasContent);
+        copyAllBtn.classList.toggle('hidden', !hasContent);
+        clearAllBtn.classList.toggle('hidden', !hasContent);
     };
 
     async function generateChapter(chapter, button) {
         const originalButtonText = button.textContent;
         button.disabled = true;
         button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
+        
         appState.topic = document.getElementById('mainThesisTopic').value;
         appState.problem = document.getElementById('mainRumusanMasalah').value;
         if (!appState.topic || !appState.problem) {
@@ -87,11 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Request gagal');
+            
             if (data.text) {
                 appState.generated[chapter] = data.text;
-                updateUI();
+                updateUI(); // Cukup panggil fungsi ini untuk me-render ulang semua hasil
                 document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
-            } else { throw new Error("Respons dari server tidak berisi teks."); }
+            } else { 
+                throw new Error("Respons dari server tidak berisi teks."); 
+            }
         } catch (error) {
             alert('Gagal: ' + error.message);
         } finally {
@@ -103,13 +117,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // EVENT LISTENERS
     mobileMenuButton.addEventListener('click', toggleMenu);
     sidebarOverlay.addEventListener('click', toggleMenu);
-    navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchView(e.currentTarget.dataset.target); }); });
+    
+    navLinks.forEach(link => { 
+        link.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            switchView(e.currentTarget.dataset.target); 
+        }); 
+    });
+
     generateButtons.forEach(button => {
         button.addEventListener('click', () => generateChapter(button.dataset.chapter, button));
     });
     
-    document.getElementById('copyAllBtn').addEventListener('click', () => { /* ... */ });
-    document.getElementById('clearAllBtn').addEventListener('click', () => { /* ... */ });
+    copyAllBtn.addEventListener('click', () => {
+        const textToCopy = document.getElementById('thesisContent').innerText;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert('Seluruh draf berhasil disalin!');
+        }).catch(err => {
+            alert('Gagal menyalin.');
+        });
+    });
+
+    clearAllBtn.addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin menghapus semua hasil?')) {
+            appState.generated = {};
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('completed'));
+            updateUI();
+        }
+    });
 
     // INISIALISASI
     switchView('form-home');
