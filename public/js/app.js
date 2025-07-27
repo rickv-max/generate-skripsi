@@ -1,68 +1,62 @@
-// public/js/app.js (VERSI FINAL DENGAN PERBAIKAN TYPO KRUSIAL)
-
 document.addEventListener('DOMContentLoaded', () => {
     // STATE & CACHE
-    const appState = { topic: '', problem: '', generated: {}, currentStep: 0 };
-    const TOTAL_STEPS = 6;
-    const wizardSteps = document.querySelectorAll('.wizard-step');
-    const progressSteps = document.querySelectorAll('.progress-step');
-    const nextBtn = document.getElementById('next-step-btn');
-    const prevBtn = document.getElementById('prev-step-btn');
+    const appState = { topic: '', problem: '', generated: {}, currentView: 'form-home' };
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const menuOpenIcon = document.getElementById('menu-open-icon');
+    const menuCloseIcon = document.getElementById('menu-close-icon');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
     const generateButtons = document.querySelectorAll('.generate-button');
-    const finalOutput = document.getElementById('final-output');
-    const copyAllBtn = document.getElementById('copyAllBtn');
 
     // FUNGSI INTI
-    const navigateToStep = (newStepIndex) => {
-        const oldStepIndex = appState.currentStep;
-        if (newStepIndex === oldStepIndex) return;
+    const toggleMenu = () => {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebar.classList.toggle('translate-x-0');
+        sidebarOverlay.classList.toggle('hidden');
+        menuOpenIcon.classList.toggle('hidden');
+        menuCloseIcon.classList.toggle('hidden');
+    };
 
-        // =====================================================================
-        // INI ADALAH BARIS YANG SEBELUMNYA MEMILIKI TYPO DAN SEKARANG SUDAH BENAR
-        // (Sebelumnya: oldStep_index, sekarang: oldStepIndex)
-        // =====================================================================
-        if (wizardSteps[oldStepIndex]) {
-            wizardSteps[oldStepIndex].classList.add('exiting');
-            wizardSteps[oldStepIndex].addEventListener('animationend', () => {
-                wizardSteps[oldStepIndex].classList.remove('active', 'exiting');
-            }, { once: true });
-        }
-
-        if (wizardSteps[newStepIndex]) {
-            wizardSteps[newStepIndex].classList.add('active');
-        }
-
-        appState.currentStep = newStepIndex;
-        updateUI();
+    const switchView = (targetId) => {
+        document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) targetSection.classList.remove('hidden');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.target === targetId) link.classList.add('active');
+        });
+        appState.currentView = targetId;
+        if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) toggleMenu();
     };
 
     const updateUI = () => {
-        progressSteps.forEach((step, index) => {
-            step.classList.remove('active', 'completed');
-            if (index < appState.currentStep) step.classList.add('completed');
-            if (index === appState.currentStep) step.classList.add('active');
+        const desktopPreview = document.getElementById('thesisContent');
+        const resultContainer = document.getElementById('result-container');
+        if (!desktopPreview || !resultContainer) return;
+
+        let fullText = '';
+        let hasContent = false;
+        resultContainer.innerHTML = ''; // Kosongkan hasil di main view
+
+        ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
+            if (appState.generated[bab]) {
+                const titleMap = { bab1: "BAB I: PENDAHULUAN", bab2: "BAB II: TINJAUAN PUSTAKA", bab3: "BAB III: METODE PENELITIAN", bab4: "BAB IV: PEMBAHASAN" };
+                fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
+                
+                // Buat kartu hasil di main view
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
+                resultContainer.appendChild(resultCard);
+
+                hasContent = true;
+            }
         });
 
-        prevBtn.style.visibility = appState.currentStep > 0 ? 'visible' : 'hidden';
-        nextBtn.style.visibility = appState.currentStep < TOTAL_STEPS - 1 ? 'visible' : 'hidden';
-
-        if (appState.currentStep === 0) {
-            nextBtn.disabled = !(document.getElementById('mainThesisTopic').value && document.getElementById('mainRumusanMasalah').value);
-        } else if (appState.currentStep > 0 && appState.currentStep < TOTAL_STEPS - 1) {
-            const chapter = `bab${appState.currentStep}`;
-            nextBtn.disabled = !appState.generated[chapter];
-        }
-
-        if (appState.currentStep === TOTAL_STEPS - 1) {
-            let fullText = '';
-            for (let i = 1; i <= 4; i++) {
-                const chapterKey = `bab${i}`;
-                if (appState.generated[chapterKey]) {
-                    fullText += `====================\nBAB ${i}\n====================\n\n${appState.generated[chapterKey]}\n\n\n`;
-                }
-            }
-            finalOutput.value = fullText.trim();
-        }
+        desktopPreview.innerHTML = hasContent ? fullText : `<p class="text-muted">Pratinjau keseluruhan akan muncul di sini.</p>`;
+        document.getElementById('copyAllBtn').classList.toggle('hidden', !hasContent);
+        document.getElementById('clearAllBtn').classList.toggle('hidden', !hasContent);
     };
 
     async function generateChapter(chapter, button) {
@@ -71,22 +65,34 @@ document.addEventListener('DOMContentLoaded', () => {
         button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
         appState.topic = document.getElementById('mainThesisTopic').value;
         appState.problem = document.getElementById('mainRumusanMasalah').value;
-        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
+        if (!appState.topic || !appState.problem) {
+            alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
+            button.disabled = false; button.innerHTML = originalButtonText; switchView('form-home'); return;
+        }
         
+        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
+        if (chapter === 'bab1') {
+            payload.details.latarBelakang = document.getElementById('formLatarBelakang').value;
+            payload.details.tujuanPenelitian = document.getElementById('formTujuanPenelitian').value;
+        } else if (chapter === 'bab2') {
+            payload.details.subtopics = document.getElementById('mainChapter2Subtopics').value;
+        } else if (chapter === 'bab3') {
+            payload.details.pendekatan = document.getElementById('formPendekatanPenelitian').value;
+            payload.details.jenis = document.getElementById('formJenisPenelitian').value;
+            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value;
+            payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
+            payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
+        }
+
         try {
-            const response = await fetch('/.netlify/functions/generate-thesis', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Request gagal');
-            
-            appState.generated[chapter] = data.text;
-            const resultBox = document.getElementById(`result-${chapter}`);
-            resultBox.innerText = data.text;
-            resultBox.classList.remove('hidden');
-            updateUI();
+            if (data.text) {
+                appState.generated[chapter] = data.text;
+                updateUI(); // Panggil updateUI untuk menampilkan semua hasil yang ada
+                document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
+            } else { throw new Error("Respons dari server tidak berisi teks."); }
         } catch (error) {
             alert('Gagal: ' + error.message);
         } finally {
@@ -96,36 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // EVENT LISTENERS
-    progressSteps.forEach(step => {
-        step.addEventListener('click', () => {
-            const targetStep = parseInt(step.dataset.step);
-            // Hanya izinkan navigasi ke langkah yang sudah selesai atau yang aktif
-            if (step.classList.contains('completed') || step.classList.contains('active')) {
-                navigateToStep(targetStep);
-            }
-        });
-    });
-
-    nextBtn.addEventListener('click', () => {
-        if (appState.currentStep < TOTAL_STEPS - 1) navigateToStep(appState.currentStep + 1);
-    });
-    prevBtn.addEventListener('click', () => {
-        if (appState.currentStep > 0) navigateToStep(appState.currentStep - 1);
-    });
-    
+    mobileMenuButton.addEventListener('click', toggleMenu);
+    sidebarOverlay.addEventListener('click', toggleMenu);
+    navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchView(e.currentTarget.dataset.target); }); });
     generateButtons.forEach(button => {
         button.addEventListener('click', () => generateChapter(button.dataset.chapter, button));
     });
-
-    copyAllBtn.addEventListener('click', () => {
-        finalOutput.select();
-        document.execCommand('copy');
-        alert('Draf skripsi lengkap berhasil disalin!');
-    });
     
-    document.getElementById('mainThesisTopic').addEventListener('input', updateUI);
-    document.getElementById('mainRumusanMasalah').addEventListener('input', updateUI);
+    document.getElementById('copyAllBtn').addEventListener('click', () => { /* ... */ });
+    document.getElementById('clearAllBtn').addEventListener('click', () => { /* ... */ });
 
     // INISIALISASI
+    switchView('form-home');
     updateUI();
 });
