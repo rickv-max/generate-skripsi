@@ -1,7 +1,9 @@
 // public/js/app.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // State aplikasi untuk menyimpan semua data
+    // =================================================
+    // BAGIAN 1: State Aplikasi & Cache Elemen DOM
+    // =================================================
     const appState = {
         topic: '',
         problem: '',
@@ -14,14 +16,38 @@ document.addEventListener('DOMContentLoaded', () => {
         currentView: 'form-home'
     };
 
-    // Cache elemen DOM
+    // Cache elemen DOM utama
     const navLinks = document.querySelectorAll('.nav-link');
     const formSections = document.querySelectorAll('.form-section');
     const thesisContentEl = document.getElementById('thesisContent');
     const copyAllBtn = document.getElementById('copyAllBtn');
     const clearAllBtn = document.getElementById('clearAllBtn');
-    
-    // Fungsi untuk mengubah tampilan form
+
+    // Cache elemen DOM untuk menu mobile
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const menuOpenIcon = document.getElementById('menu-open-icon');
+    const menuCloseIcon = document.getElementById('menu-close-icon');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    // =================================================
+    // BAGIAN 2: Logika untuk Menu Mobile Responsif
+    // =================================================
+    const toggleMenu = () => {
+        sidebar.classList.toggle('open');
+        sidebarOverlay.classList.toggle('hidden');
+        menuOpenIcon.classList.toggle('hidden');
+        menuCloseIcon.classList.toggle('hidden');
+    };
+
+    mobileMenuButton.addEventListener('click', toggleMenu);
+    sidebarOverlay.addEventListener('click', toggleMenu);
+
+    // =================================================
+    // BAGIAN 3: Fungsi Inti Aplikasi
+    // =================================================
+
+    // Fungsi untuk mengubah tampilan form yang aktif
     const switchView = (targetId) => {
         formSections.forEach(section => section.classList.add('hidden'));
         
@@ -38,25 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         appState.currentView = targetId;
-    };
-    
-    // Event listener untuk link navigasi
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = e.currentTarget.dataset.target;
-            switchView(targetId);
-        });
-    });
 
-    // Fungsi untuk memperbarui pratinjau dan tombol
+        // Otomatis tutup sidebar setelah memilih menu di mobile
+        if (window.innerWidth < 1024 && sidebar.classList.contains('open')) {
+            toggleMenu();
+        }
+    };
+
+    // Fungsi untuk memperbarui panel pratinjau di sebelah kanan
     const updatePreview = () => {
         let fullText = '';
         let hasContent = false;
-        const chapters = ['bab1', 'bab2', 'bab3', 'bab4'];
-
-        // Menggunakan preformatted text untuk menjaga format dari AI
-        const renderChapter = (title, content) => `<h2>${title}</h2><pre>${content}</pre>`;
+        
+        const renderChapter = (title, content) => `<h2>${title}</h2><pre class="whitespace-pre-wrap break-words">${content}</pre>`;
 
         if(appState.generated.bab1) {
             fullText += renderChapter('BAB I PENDAHULUAN', appState.generated.bab1);
@@ -76,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if(hasContent) {
-            thesisContentEl.innerHTML = fullText.replace(/<h2>/g, '<h2 class="chapter-title">'); // Menambahkan style pada judul bab
+            thesisContentEl.innerHTML = fullText.replace(/<h2>/g, '<h2 class="chapter-title">');
             copyAllBtn.style.display = 'block';
             clearAllBtn.style.display = 'block';
         } else {
@@ -85,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllBtn.style.display = 'none';
         }
     };
-    
-    // Fungsi utama untuk memanggil API
+
+    // Fungsi utama untuk memanggil API dan menghasilkan draf bab
     async function generateChapter(chapter, button) {
         const originalButtonText = button.innerHTML;
         button.disabled = true;
@@ -99,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Harap isi Topik Skripsi dan Rumusan Masalah Utama pada halaman "Informasi Utama" terlebih dahulu.');
             button.disabled = false;
             button.innerHTML = originalButtonText;
-            switchView('form-home'); // Arahkan pengguna ke form utama
+            switchView('form-home');
             return;
         }
 
@@ -107,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
             topic: appState.topic,
             problem: appState.problem,
             chapter: chapter,
-            // Mengumpulkan data opsional dari setiap form
             details: {}
         };
         
@@ -137,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
             appState.generated[chapter] = data.text;
             updatePreview();
             
-            // Tandai navigasi sebagai selesai
             document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
 
         } catch (error) {
@@ -148,17 +166,32 @@ document.addEventListener('DOMContentLoaded', () => {
             button.innerHTML = originalButtonText;
         }
     }
-    
-    // Event listener untuk tombol "Salin" dan "Bersihkan"
+
+    // =================================================
+    // BAGIAN 4: Event Listeners (Menghubungkan Fungsi ke Aksi Pengguna)
+    // =================================================
+
+    // Event listener untuk semua link navigasi di sidebar
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = e.currentTarget.dataset.target;
+            switchView(targetId);
+        });
+    });
+
+    // Event listener untuk tombol "Salin"
     copyAllBtn.addEventListener('click', () => {
         const fullText = thesisContentEl.innerText;
         navigator.clipboard.writeText(fullText).then(() => {
             alert('Seluruh draf skripsi berhasil disalin ke clipboard!');
         }).catch(err => {
             alert('Gagal menyalin teks.');
+            console.error('Clipboard copy failed: ', err);
         });
     });
 
+    // Event listener untuk tombol "Bersihkan"
     clearAllBtn.addEventListener('click', () => {
         if (confirm('Apakah Anda yakin ingin menghapus semua draf yang telah dibuat?')) {
             appState.generated = { bab1: '', bab2: '', bab3: '', bab4: '' };
@@ -167,12 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Menghubungkan semua tombol "Buat Draf"
+    // Menghubungkan setiap tombol "Buat Draf" ke fungsinya masing-masing
     document.getElementById('generateBab1Btn').addEventListener('click', (e) => generateChapter('bab1', e.currentTarget));
     document.getElementById('generateBab2Btn').addEventListener('click', (e) => generateChapter('bab2', e.currentTarget));
     document.getElementById('generateBab3Btn').addEventListener('click', (e) => generateChapter('bab3', e.currentTarget));
     document.getElementById('generateBab4Btn').addEventListener('click', (e) => generateChapter('bab4', e.currentTarget));
     
-    // Inisialisasi
+    // =================================================
+    // BAGIAN 5: Inisialisasi Aplikasi
+    // =================================================
     switchView('form-home');
 });
