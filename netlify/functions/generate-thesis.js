@@ -1,6 +1,5 @@
 // netlify/functions/generate-thesis.js
 
-// Menggunakan node-fetch yang sudah ada di package.json Anda
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
@@ -32,7 +31,6 @@ exports.handler = async (event) => {
 
         Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi berikut:\n\n`;
 
-        // INILAH BAGIAN "OTAK" YANG SEBELUMNYA HILANG
         switch (chapter) {
             case 'bab1':
                 prompt += `BAB I - PENDAHULUAN:
@@ -48,8 +46,7 @@ exports.handler = async (event) => {
                 break;
             case 'bab3':
                 prompt += `BAB III - METODE PENELITIAN:
-                - Jelaskan metode penelitian hukum yang paling sesuai untuk topik "${topic}".
-                - Buat sub-bab 3.1 Pendekatan Penelitian (disarankan yuridis normatif jika sesuai, atau jelaskan pilihan lain). ${details.pendekatan ? `Gunakan preferensi ini: "${details.pendekatan}"` : ''}
+                - Buat sub-bab 3.1 Pendekatan Penelitian (disarankan yuridis normatif jika sesuai). ${details.pendekatan ? `Gunakan preferensi ini: "${details.pendekatan}"` : ''}
                 - Buat sub-bab 3.2 Jenis Penelitian (misal: deskriptif analitis). ${details.jenis ? `Gunakan preferensi ini: "${details.jenis}"` : ''}
                 - Buat sub-bab 3.3 Lokasi Penelitian (jelaskan di mana penelitian dilakukan, bisa berupa studi kepustakaan jika tidak ada lokasi fisik). ${details.lokasi ? `Gunakan preferensi ini: "${details.lokasi}"` : ''}
                 - Buat sub-bab 3.4 Metode Pengumpulan Data (studi kepustakaan). ${details.metodePengumpulanData ? `Gunakan preferensi ini: "${details.metodePengumpulanData}"` : ''}
@@ -75,7 +72,6 @@ exports.handler = async (event) => {
         };
 
         // 6. Kirim request ke Gemini API
-        // Menggunakan model gemini-pro yang lebih umum dan stabil
         const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
         const apiResponse = await fetch(apiURL, {
             method: 'POST',
@@ -105,6 +101,4 @@ exports.handler = async (event) => {
             body: JSON.stringify({ error: error.message }),
         };
     }
-};```
-
-Setelah Anda mengganti file `generate-thesis.js` Anda dengan kode di atas, simpan, dan deploy ulang, seluruh aplikasi Anda akan berfungsi. Sekarang "pelayan" (frontend) dan "koki" (backend) sudah berbicara dalam bahasa yang sama.
+};
