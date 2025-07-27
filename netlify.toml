@@ -15,7 +15,4 @@
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
-# Perubahan ini untuk memaksa deploy ulang pada 28 Juli```
-**Menjadi ini:**
-```toml
-# Perubahan ini untuk memaksa deploy ulang pada 28 Juli - PEMBERSIHAN CACHE!
+# Perubahan untuk memicu deploy ulang bersih pada 28 Juli
