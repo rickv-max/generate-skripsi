@@ -31,13 +31,16 @@ exports.handler = async (event) => {
 
         // Bangun prompt (perintah) untuk Gemini berdasarkan bab yang diminta
         let prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
-        Tugas Anda adalah membuat draf akademis yang sistematis, logis, dan menggunakan bahasa Indonesia yang baik dan benar.
+Tugas Anda adalah membuat draf akademis secara lengkap, utuh, tidak diringkas, dan sesuai struktur formal skripsi hukum di Indonesia.
+Gunakan bahasa akademik yang logis, sistematis, dan formal. Panjang isi tidak dibatasi. Tidak boleh menyingkat, meringkas, atau melewatkan bagian penting.
 
-        Konteks Utama:
-        - Topik Skripsi: "${topic}"
-        - Rumusan Masalah Utama: "${problem}"
+Berikan hasil seolah-olah ini akan dikumpulkan ke dosen pembimbing skripsi fakultas hukum. Jangan sertakan catatan, disclaimer, atau penjelasan tambahan di luar isi skripsi.
 
-        Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi berikut:\n\n`;
+Konteks Utama:
+- Topik Skripsi: "${topic}"
+- Rumusan Masalah Utama: "${problem}"
+
+Tugas Spesifik: Buatkan draf untuk ${chapter.toUpperCase()} dengan instruksi berikut:\n\n`;
 
         // Bagian "otak" untuk meracik prompt per bab
         switch (chapter) {
