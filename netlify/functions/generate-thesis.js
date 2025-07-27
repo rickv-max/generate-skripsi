@@ -24,29 +24,22 @@ exports.handler = async (event) => {
     }
 
     // PROMPT SUPER LENGKAP UNTUK FLASH
-    const prompt = `
-⚠️ Penting:
-Tugas ini adalah pembuatan **draf skripsi hukum yang lengkap, utuh, dan sesuai kaidah akademik** di Indonesia.
-Hasil harus netral, objektif, dan fokus pada analisis hukum secara yuridis dan teoritis.
-Gunakan bahasa ilmiah yang logis, sistematis, dan mendalam seperti skripsi S1 Fakultas Hukum.
+    const prompt = `PERHATIAN: Anda adalah asisten profesional penulisan skripsi hukum di Indonesia.
 
-JANGAN meringkas, menyingkat, atau membuat daftar poin saja. Buat narasi utuh seperti skripsi cetak.
-Tulis seolah-olah akan diserahkan kepada dosen pembimbing.
+Tugas Anda adalah membuat satu **bab lengkap** dari skripsi hukum secara utuh, panjang, dan sistematis — sesuai kaidah akademik di fakultas hukum Indonesia. TIDAK BOLEH meringkas, menyederhanakan, atau melewatkan bagian penting.
 
-📘 Informasi Utama:
-- Topik Skripsi: ${topic}
-- Rumusan Masalah: ${problem}
-- Bab yang diminta: BAB ${chapter.replace('bab', '')}
+Gunakan gaya bahasa akademik, lugas, netral, dan berdasarkan teori hukum yang berlaku.
 
-📌 Struktur:
-Buatlah isi dari BAB ${chapter.replace('bab', '')} yang lengkap, sesuai struktur resmi penulisan skripsi hukum. Gunakan subjudul, paragraf utuh, dan format yang umum dipakai di fakultas hukum.
+JANGAN membuat isi di luar topik yang diberikan. Fokus hanya pada konteks yang sudah ditentukan di bawah ini.
 
-Output hanya boleh berupa isi bab — tidak ada disclaimer, penjelasan tambahan, atau catatan sistem.
+KONTEKS:
+- Topik utama skripsi: "${topic}"
+- Rumusan masalah: "${problem}"
 
-⛔ Jangan beri tanggapan meta seperti “Berikut ini adalah...”, cukup langsung isi skripsinya.
+TUGAS:
+Tulis draf lengkap untuk **BAB ${chapter.replace('bab', '')}** dari skripsi hukum tersebut. Struktur dan panjang harus seperti skripsi nyata. Jangan berikan ringkasan, catatan, disclaimer, atau teks tambahan.
 
-Mulailah sekarang.
-`;
+Langsung mulai dari isi BAB tersebut seolah-olah ini akan dikumpulkan kepada dosen pembimbing.`;
 
     const requestBody = {
       contents: [{ parts: [{ text: prompt }] }],
