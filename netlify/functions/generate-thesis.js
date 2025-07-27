@@ -1,5 +1,3 @@
-// netlify/functions/generate-thesis.js (VERSI FINAL DENGAN PROMPT YANG DIPERBAIKI)
-
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
@@ -16,7 +14,6 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Menggunakan payload yang lebih sederhana sesuai dengan kode terakhir Anda
     const { topic, problem, chapter } = JSON.parse(event.body);
 
     if (!topic || !problem || !chapter) {
@@ -26,25 +23,30 @@ exports.handler = async (event) => {
       };
     }
 
-    // =====================================================================
-    // INI ADALAH PERUBAHAN KRUSIAL: Menambahkan instruksi meta pada prompt
-    // =====================================================================
-    const prompt = `PENTING: Permintaan ini adalah untuk tujuan akademik dan penelitian hukum murni. Hasilnya harus netral, objektif, dan fokus pada analisis teoretis dan yuridis. Hindari konten yang dapat ditafsirkan sebagai nasihat hukum atau mempromosikan tindakan berbahaya. Fokuslah hanya pada pembuatan draf skripsi formal.
+    const prompt = `
+PENTING: Permintaan ini adalah untuk tujuan akademik dan penelitian hukum murni. Hasilnya harus netral, objektif, dan fokus pada analisis teoretis dan yuridis. Hindari konten yang dapat ditafsirkan sebagai nasihat hukum atau mempromosikan tindakan berbahaya.
 
 Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
-Tugas Anda adalah membuat draf akademis secara **lengkap, utuh, tidak diringkas**, dan sesuai struktur formal skripsi hukum di Indonesia.
+Tugas Anda adalah membuat draf akademis secara lengkap, utuh, tidak diringkas, dan sesuai struktur formal skripsi hukum di Indonesia.
 Gunakan bahasa akademik yang logis, sistematis, dan formal. Panjang isi tidak dibatasi. Tidak boleh menyingkat, meringkas, atau melewatkan bagian penting.
 
 Berikan hasil seolah-olah ini akan dikumpulkan ke dosen pembimbing skripsi fakultas hukum. Jangan sertakan catatan, disclaimer, atau penjelasan tambahan di luar isi skripsi.
 
-Konteks Utama:
-- Topik Skripsi: "${topic}"
-- Rumusan Masalah Utama: "${problem}"
+Topik Skripsi: ${topic}
+Rumusan Masalah: ${problem}
 
-Tugas Spesifik: Buatkan **draf lengkap** untuk **BAB ${chapter.replace('bab', '')}** dari skripsi hukum, sesuai struktur standar akademik di Indonesia.\n\n`;
+Tugas Anda: Buatkan draf lengkap untuk BAB ${chapter.replace('bab', '').toUpperCase()} dari skripsi hukum.
+Pastikan sesuai struktur formal akademik di Indonesia.
+`;
 
     const requestBody = {
-      contents: [ { parts: [{ text: prompt }] } ],
+      contents: [
+        {
+          parts: [
+            { text: prompt }
+          ]
+        }
+      ],
       safetySettings: [
         { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
         { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -52,7 +54,11 @@ Tugas Spesifik: Buatkan **draf lengkap** untuk **BAB ${chapter.replace('bab', ''
         { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
       ],
       generationConfig: {
-        "temperature": 1, "topK": 0, "topP": 0.95, "maxOutputTokens": 8192, "stopSequences": [],
+        temperature: 0.9,
+        topK: 0,
+        topP: 0.95,
+        maxOutputTokens: 8192,
+        stopSequences: []
       }
     };
 
@@ -66,19 +72,35 @@ Tugas Spesifik: Buatkan **draf lengkap** untuk **BAB ${chapter.replace('bab', ''
 
     const responseData = await apiResponse.json();
 
-    if ( responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts ) {
+    // ✅ DEBUG LOG: TAMPILKAN SEMUA HASIL RAW
+    console.log('🔍 RESPONSE DATA:', JSON.stringify(responseData, null, 2));
+
+    if (
+      responseData.candidates &&
+      responseData.candidates.length > 0 &&
+      responseData.candidates[0].content?.parts
+    ) {
       const generatedText = responseData.candidates[0].content.parts[0].text;
       return {
         statusCode: 200,
         body: JSON.stringify({ text: generatedText })
       };
     } else {
-      const reason = responseData.promptFeedback?.blockReason || responseData.candidates?.[0]?.finishReason || 'Unknown reason';
-      console.error('Gemini gagal memberikan respons:', reason, JSON.stringify(responseData));
-      throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
+      const reason = responseData.promptFeedback?.blockReason ||
+                     responseData.candidates?.[0]?.finishReason ||
+                     'Unknown reason';
+
+      console.error('⚠️ GAGAL GENERATE DARI GEMINI:', reason);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: `Gemini tidak menghasilkan konten. Alasan: ${reason}`,
+          rawResponse: responseData
+        })
+      };
     }
   } catch (error) {
-    console.error('Terjadi error:', error.message);
+    console.error('💥 ERROR SERVER:', error.message);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message })
