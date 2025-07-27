@@ -61,97 +61,97 @@
         <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
 
         <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
-            <div id="form-container">
-                <div id="form-home" class="form-section">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang</h2>
-                    <p class="text-gray-600 mb-6">Mulailah dengan mengisi informasi dasar skripsi Anda. Data ini akan otomatis digunakan sebagai konteks untuk pembuatan setiap bab.</p>
-                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
-                        <div>
-                            <label for="mainThesisTopic" class="form-label">Topik Utama Skripsi Hukum</label>
-                            <input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Hukum Konsumen dalam Transaksi E-commerce" class="form-input">
-                        </div>
-                        <div>
-                            <label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Utama</label>
-                            <textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana efektivitas perlindungan hukum konsumen menurut UU ITE?" class="form-input"></textarea>
-                        </div>
-                    </div>
+    <!-- Kontainer untuk semua formulir -->
+    <div id="form-container">
+        <!-- FORM HOME -->
+        <div id="form-home" class="form-section">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang</h2>
+            <p class="text-gray-600 mb-6">Mulailah dengan mengisi informasi dasar skripsi Anda.</p>
+            <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                <div>
+                    <label for="mainThesisTopic" class="form-label">Topik Utama Skripsi Hukum</label>
+                    <input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Hukum Konsumen..." class="form-input">
                 </div>
-
-                <div id="form-bab1" class="form-section hidden">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB I – PENDAHULUAN</h2>
-                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
-                        <p class="text-sm text-gray-500">Anda dapat memberikan draf awal pada kolom di bawah untuk memandu AI, atau biarkan kosong agar AI membuatnya dari awal.</p>
-                        <div>
-                           <label for="formLatarBelakang" class="form-label">1.1 Latar Belakang (Opsional)</label>
-                           <textarea id="formLatarBelakang" rows="5" placeholder="Tuliskan poin-poin penting atau draf awal latar belakang di sini." class="form-input"></textarea>
-                        </div>
-                        <div>
-                           <label for="formTujuanPenelitian" class="form-label">1.3 Tujuan Penelitian (Opsional)</label>
-                           <textarea id="formTujuanPenelitian" rows="3" placeholder="Contoh: Untuk menganalisis efektivitas perlindungan hukum konsumen..." class="form-input"></textarea>
-                        </div>
-                    </div>
-                    <button id="generateBab1Btn" class="btn-primary mt-6">Buat Draf BAB I</button>
-                </div>
-
-                <div id="form-bab2" class="form-section hidden">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB II – TINJAUAN PUSTAKA</h2>
-                     <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
-                         <p class="text-sm text-gray-500">AI akan membuat tinjauan umum berdasarkan topik Anda. Tambahkan sub-bab spesifik yang Anda inginkan di bawah ini.</p>
-                        <div>
-                            <label for="mainChapter2Subtopics" class="form-label">Kerangka Teori / Sub-bab Tambahan (Pisahkan dengan koma)</label>
-                            <input type="text" id="mainChapter2Subtopics" placeholder="Contoh: Teori Keadilan, Asas Hukum Perjanjian, Regulasi Terkait" class="form-input">
-                        </div>
-                    </div>
-                    <button id="generateBab2Btn" class="btn-primary mt-6">Buat Draf BAB II</button>
-                </div>
-                
-                <div id="form-bab3" class="form-section hidden">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB III – METODE PENELITIAN</h2>
-    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
-        <p class="text-sm text-gray-500">AI akan menyarankan metode penelitian yang sesuai. Anda bisa memberikan preferensi pada kolom di bawah.</p>
-        <div>
-            <label for="formPendekatanPenelitian" class="form-label">3.1 Pendekatan Penelitian (Opsional)</label>
-            <textarea id="formPendekatanPenelitian" rows="2" placeholder="Contoh: Yuridis normatif, yuridis empiris, atau socio-legal." class="form-input"></textarea>
-        </div>
-        <div>
-            <label for="formJenisPenelitian" class="form-label">3.2 Jenis Penelitian (Opsional)</label>
-            <textarea id="formJenisPenelitian" rows="2" placeholder="Contoh: Deskriptif, eksplanatif, atau preskriptif." class="form-input"></textarea>
-        </div>
-        <div>
-            <label for="formLokasiPenelitian" class="form-label">3.3 Lokasi Penelitian (Opsional)</label>
-            <textarea id="formLokasiPenelitian" rows="2" placeholder="Sebutkan tempat/lokasi penelitian, atau 'dilakukan melalui studi pustaka'." class="form-input"></textarea>
-        </div>
-         <div>
-            <label for="formMetodePengumpulanData" class="form-label">3.4 Metode Pengumpulan Data (Opsional)</label>
-            <textarea id="formMetodePengumpulanData" rows="2" placeholder="Contoh: Studi dokumen, wawancara, atau observasi." class="form-input"></textarea>
-        </div>
-        <div>
-            <label for="formModelAnalisisData" class="form-label">3.5 Model Analisis Data (Opsional)</label>
-            <textarea id="formModelAnalisisData" rows="2" placeholder="Contoh: Kualitatif deskriptif, induktif-deduktif, atau hermeneutika hukum." class="form-input"></textarea>
-        </div>
-    </div>
-         <button id="generateBab3Btn" class="btn-primary mt-6">Buat Draf BAB III</button>
-         </div>
-                <div id="form-bab4" class="form-section hidden">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB IV – HASIL PENELITIAN DAN PEMBAHASAN</h2>
-                    <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
-                         <p class="text-gray-600">BAB IV akan dibuat secara utuh berdasarkan **Topik Skripsi** dan **Rumusan Masalah Utama** yang telah Anda masukkan.</p>
-                         <p class="text-gray-600 mt-2">AI akan menyusun analisis dan pembahasan secara logis untuk menjawab rumusan masalah tersebut. Pastikan rumusan masalah Anda sudah jelas.</p>
-                    </div>
-                    <div id="mobile-result-view" class="hidden">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold text-gray-800">Draf Dihasilkan</h2>
-                            <button id="backToFormBtn" class="btn-secondary">Kembali</button>
-                        </div>
-                        <div id="mobile-thesisContent" class="bg-white p-6 rounded-lg border border-gray-200 prose prose-sm max-w-none">
-                            <!-- Hasil akan disuntikkan di sini oleh JavaScript -->
-                        </div>
-                    </div>
-                    <button id="generateBab4Btn" class="btn-primary mt-6">Buat Draf BAB IV</button>
+                <div>
+                    <label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Utama</label>
+                    <textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana efektivitas perlindungan hukum..." class="form-input"></textarea>
                 </div>
             </div>
-        </main>
+        </div>
 
+        <!-- FORM BAB I -->
+        <div id="form-bab1" class="form-section hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB I – PENDAHULUAN</h2>
+            <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                <p class="text-sm text-gray-500">Anda dapat memberikan draf awal pada kolom di bawah untuk memandu AI, atau biarkan kosong agar AI membuatnya dari awal.</p>
+                <div>
+                   <label for="formLatarBelakang" class="form-label">1.1 Latar Belakang (Opsional)</label>
+                   <textarea id="formLatarBelakang" rows="5" placeholder="Tuliskan poin-poin penting atau draf awal latar belakang di sini." class="form-input"></textarea>
+                </div>
+                <div>
+                   <label for="formTujuanPenelitian" class="form-label">1.3 Tujuan Penelitian (Opsional)</label>
+                   <textarea id="formTujuanPenelitian" rows="3" placeholder="Contoh: Untuk menganalisis efektivitas perlindungan hukum konsumen..." class="form-input"></textarea>
+                </div>
+            </div>
+            <button id="generateBab1Btn" class="btn-primary mt-6">Buat Draf BAB I</button>
+            <div id="result-bab1" class="result-box hidden mt-6"></div>
+        </div>
+
+        <!-- FORM BAB II -->
+        <div id="form-bab2" class="form-section hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB II – TINJAUAN PUSTAKA</h2>
+             <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                 <p class="text-sm text-gray-500">AI akan membuat tinjauan umum berdasarkan topik Anda. Tambahkan sub-bab spesifik yang Anda inginkan di bawah ini.</p>
+                <div>
+                    <label for="mainChapter2Subtopics" class="form-label">Kerangka Teori / Sub-bab Tambahan (Pisahkan dengan koma)</label>
+                    <input type="text" id="mainChapter2Subtopics" placeholder="Contoh: Teori Keadilan, Asas Hukum Perjanjian, Regulasi Terkait" class="form-input">
+                </div>
+            </div>
+            <button id="generateBab2Btn" class="btn-primary mt-6">Buat Draf BAB II</button>
+            <div id="result-bab2" class="result-box hidden mt-6"></div>
+        </div>
+        
+        <!-- FORM BAB III -->
+        <div id="form-bab3" class="form-section hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB III – METODE PENELITIAN</h2>
+            <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                <p class="text-sm text-gray-500">AI akan menyarankan metode penelitian yang sesuai. Anda bisa memberikan preferensi pada kolom di bawah.</p>
+                <div>
+                    <label for="formPendekatanPenelitian" class="form-label">3.1 Pendekatan Penelitian (Opsional)</label>
+                    <textarea id="formPendekatanPenelitian" rows="2" placeholder="Contoh: Yuridis normatif, yuridis empiris, atau socio-legal." class="form-input"></textarea>
+                </div>
+                <div>
+                    <label for="formJenisPenelitian" class="form-label">3.2 Jenis Penelitian (Opsional)</label>
+                    <textarea id="formJenisPenelitian" rows="2" placeholder="Contoh: Deskriptif, eksplanatif, atau preskriptif." class="form-input"></textarea>
+                </div>
+                 <div>
+                    <label for="formLokasiPenelitian" class="form-label">3.3 Lokasi Penelitian (Opsional)</label>
+                    <textarea id="formLokasiPenelitian" rows="2" placeholder="Sebutkan tempat/lokasi penelitian, atau 'dilakukan melalui studi pustaka'." class="form-input"></textarea>
+                </div>
+                 <div>
+                    <label for="formMetodePengumpulanData" class="form-label">3.4 Metode Pengumpulan Data (Opsional)</label>
+                    <textarea id="formMetodePengumpulanData" rows="2" placeholder="Contoh: Studi dokumen, wawancara, atau observasi." class="form-input"></textarea>
+                </div>
+                <div>
+                    <label for="formModelAnalisisData" class="form-label">3.5 Model Analisis Data (Opsional)</label>
+                    <textarea id="formModelAnalisisData" rows="2" placeholder="Contoh: Kualitatif deskriptif, induktif-deduktif, atau hermeneutika hukum." class="form-input"></textarea>
+                </div>
+            </div>
+            <button id="generateBab3Btn" class="btn-primary mt-6">Buat Draf BAB III</button>
+            <div id="result-bab3" class="result-box hidden mt-6"></div>
+        </div>
+
+        <!-- FORM BAB IV -->
+        <div id="form-bab4" class="form-section hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">BAB IV – HASIL PENELITIAN DAN PEMBAHASAN</h2>
+            <div class="space-y-4 bg-white p-6 rounded-lg border border-gray-200">
+                 <p class="text-gray-600">BAB IV akan dibuat secara utuh berdasarkan **Topik Skripsi** dan **Rumusan Masalah Utama** yang telah Anda masukkan.</p>
+            </div>
+            <button id="generateBab4Btn" class="btn-primary mt-6">Buat Draf BAB IV</button>
+            <div id="result-bab4" class="result-box hidden mt-6"></div>
+        </div>
+    </div>
+</main>
         <aside class="w-1/3 bg-white border-l border-gray-200 p-8 overflow-y-auto hidden lg:block">
             <div class="sticky top-0 bg-white py-4 border-b border-gray-200 -mt-8 -mx-8 px-8">
                  <h2 class="text-xl font-bold text-gray-800">Pratinjau Draf Skripsi</h2>
