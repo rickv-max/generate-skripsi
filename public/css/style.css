@@ -1,17 +1,13 @@
 /* public/css/style.css */
 
-/*
-  Gunakan CSS Variables untuk palet warna yang konsisten dan mudah diubah.
-  Ini adalah praktik modern yang membuat styling lebih mudah dikelola.
-*/
 :root {
-    --primary-color: #4A90E2; /* Biru Modern */
+    --primary-color: #4A90E2;
     --primary-hover-color: #357ABD;
     --secondary-color: #6c757d;
     --secondary-hover-color: #5a6268;
     --danger-color: #dc3545;
     --danger-hover-color: #c82333;
-    --text-color: #212529; /* Arang */
+    --text-color: #212529;
     --bg-light: #F8F9FA;
     --border-color: #dee2e6;
     --soft-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -26,19 +22,18 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Styling untuk Navigasi Sidebar */
 .nav-link {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
     font-weight: 500;
-    color: #4b5563; /* Gray-600 */
+    color: #4b5563;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .nav-link:hover {
-    background-color: #f3f4f6; /* Gray-100 */
+    background-color: #f3f4f6;
     color: var(--text-color);
 }
 
@@ -49,7 +44,7 @@ body {
 }
 
 .nav-link.completed {
-    color: #16a34a; /* Green-600 */
+    color: #16a34a;
 }
 
 .nav-link.completed::after {
@@ -62,12 +57,11 @@ body {
     margin-right: 0.75rem;
     width: 1.25rem;
     height: 1.25rem;
+    flex-shrink: 0;
 }
 
-/* Styling Formulir */
 .form-section {
     opacity: 0;
-    transition: opacity 0.4s ease-in-out;
     animation: fadeIn 0.5s forwards;
 }
 
@@ -80,7 +74,7 @@ body {
 .form-label {
     display: block;
     font-weight: 600;
-    color: #374151; /* Gray-700 */
+    color: #374151;
     margin-bottom: 0.5rem;
 }
 
@@ -100,7 +94,6 @@ body {
     box-shadow: 0 0 0 3px var(--focus-ring-color);
 }
 
-/* Styling Tombol Universal */
 button {
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
@@ -125,13 +118,14 @@ button:active {
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: translateY(0);
 }
 
 .btn-primary {
     background-color: var(--primary-color);
     color: white;
 }
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
     background-color: var(--primary-hover-color);
 }
 
@@ -139,7 +133,7 @@ button:disabled {
     background-color: var(--secondary-color);
     color: white;
 }
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
     background-color: var(--secondary-hover-color);
 }
 
@@ -147,30 +141,28 @@ button:disabled {
     background-color: var(--danger-color);
     color: white;
 }
-.btn-danger:hover {
+.btn-danger:hover:not(:disabled) {
     background-color: var(--danger-hover-color);
 }
 
-/* Gaya untuk Pratinjau Skripsi di Panel Kanan */
-.prose {
-    line-height: 1.6;
-}
-
-.prose h1, .prose h2, .prose h3 {
+.prose h2.chapter-title {
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-top: 1.5em;
-    margin-bottom: 0.8em;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.prose h1 { font-size: 1.8rem; text-align: center; }
-.prose h2 { font-size: 1.5rem; }
-.prose h3 { font-size: 1.25rem; }
-
-.prose p {
-    margin-bottom: 1em;
+.prose pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: transparent;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
 }
 
-/* Spinner untuk loading state */
 .loading-spinner {
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-left-color: #ffffff;
@@ -184,4 +176,14 @@ button:disabled {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+#sidebar.open {
+    transform: translateX(0);
+}
+
+#sidebar .btn-secondary, #sidebar .btn-danger {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 0.875rem;
 }
