@@ -1,4 +1,4 @@
-// public/js/app.js
+// public/js/app.js (VERSI FINAL YANG BENAR-BENAR LENGKAP)
 
 document.addEventListener('DOMContentLoaded', () => {
     // =================================================
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarOverlay = document.getElementById('sidebar-overlay');
 
     // =================================================
-    // BAGIAN 2: Fungsi Inti Aplikasi
+    // BAGIAN 2: Fungsi Helper Inti
     // =================================================
 
     // Fungsi untuk menu mobile
@@ -46,23 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
         menuCloseIcon.classList.toggle('hidden');
     };
 
-    // Fungsi untuk menampilkan/menyembunyikan view di mobile
-    const showResultView = () => {
-        if (window.innerWidth < 1024) { // Breakpoint lg: 1024px
-            formContainer.classList.add('hidden');
-            mobileResultView.classList.remove('hidden');
-        }
-    };
-    const showFormView = () => {
-        formContainer.classList.remove('hidden');
-        mobileResultView.classList.add('hidden');
-    };
-
     // Fungsi untuk berpindah antar form bab
     const switchView = (targetId) => {
-        showFormView(); // Selalu pastikan form terlihat saat berganti bab
+        // Selalu pastikan form terlihat dan hasil mobile tersembunyi saat berpindah bab
+        formContainer.classList.remove('hidden');
+        mobileResultView.classList.add('hidden');
+        
         const formSections = formContainer.querySelectorAll('.form-section');
         formSections.forEach(section => section.classList.add('hidden'));
+        
         const targetSection = document.getElementById(targetId);
         if (targetSection) {
             targetSection.classList.remove('hidden');
@@ -74,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.classList.add('active');
             }
         });
+        
         appState.currentView = targetId;
 
         if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
@@ -95,11 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const placeholder = `<p class="text-gray-500">Draf akan muncul di sini...</p>`;
         const styledText = hasContent ? fullText.replace(/<h2>/g, '<h2 class="chapter-title">') : placeholder;
 
-        // Update kedua tempat (panel desktop dan panel mobile)
         thesisContentEl.innerHTML = styledText;
         mobileThesisContentEl.innerHTML = styledText;
 
-        // Tampilkan/sembunyikan tombol Salin/Bersihkan
         if (hasContent) {
             copyAllBtn.style.display = 'flex';
             clearAllBtn.style.display = 'flex';
@@ -126,14 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const payload = {
-            topic: appState.topic,
-            problem: appState.problem,
-            chapter: chapter,
-            details: {}
-        };
+        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
         
-        // Mengisi detail untuk setiap bab
+        // =========================================================
+        // BAGIAN INI TELAH DIKEMBALIKAN SEPENUHNYA
+        // =========================================================
         if (chapter === 'bab1') {
             payload.details.latarBelakang = document.getElementById('formLatarBelakang').value;
             payload.details.tujuanPenelitian = document.getElementById('formTujuanPenelitian').value;
@@ -146,13 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
             payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
             payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
         }
+        // =========================================================
 
         try {
-            const response = await fetch('/.netlify/functions/generate-thesis', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             if (!response.ok) {
                 throw new Error(data.error || `HTTP error! status: ${response.status}`);
@@ -160,14 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.text) {
                 appState.generated[chapter] = data.text;
                 updatePreview();
-                showResultView(); // Tampilkan view hasil di mobile setelah sukses
+                
+                if (window.innerWidth < 1024) {
+                    formContainer.classList.add('hidden');
+                    mobileResultView.classList.remove('hidden');
+                }
+                
                 document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
             } else {
                 throw new Error("Respons dari server tidak berisi teks yang diharapkan.");
             }
         } catch (error) {
             alert(`Gagal memproses draf: ${error.message}`);
-            showFormView(); // Jika gagal, pastikan kembali ke tampilan form
+            switchView(`form-${chapter}`);
         } finally {
             button.disabled = false;
             button.innerHTML = originalButtonText;
@@ -178,22 +168,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // BAGIAN 3: Event Listeners
     // =================================================
 
-    // Event listener untuk menu mobile
     mobileMenuButton.addEventListener('click', toggleMenu);
     sidebarOverlay.addEventListener('click', toggleMenu);
     
-    // Event listener untuk tombol kembali dari hasil mobile
-    backToFormBtn.addEventListener('click', showFormView);
+    backToFormBtn.addEventListener('click', () => {
+        switchView(appState.currentView);
+    });
 
-    // Event listener untuk navigasi bab
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             switchView(e.currentTarget.dataset.target);
         });
     });
-
-    // Event listener untuk tombol Salin & Bersihkan
+    
     copyAllBtn.addEventListener('click', () => {
         const fullText = thesisContentEl.innerText;
         navigator.clipboard.writeText(fullText).then(() => {
@@ -211,12 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Event listener untuk setiap tombol "Buat Bab"
     document.getElementById('generateBab1Btn').addEventListener('click', (e) => generateChapter('bab1', e.currentTarget));
     document.getElementById('generateBab2Btn').addEventListener('click', (e) => generateChapter('bab2', e.currentTarget));
     document.getElementById('generateBab3Btn').addEventListener('click', (e) => generateChapter('bab3', e.currentTarget));
     document.getElementById('generateBab4Btn').addEventListener('click', (e) => generateChapter('bab4', e.currentTarget));
-    
+
     // =================================================
     // BAGIAN 4: Inisialisasi Aplikasi
     // =================================================
