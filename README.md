@@ -76,3 +76,5 @@ Penting!
  * Draf Awal: Konten yang dihasilkan oleh AI adalah draf awal. Sangat penting untuk melakukan verifikasi, penyuntingan, dan penambahan secara manual dengan referensi hukum yang valid dan analisis Anda sendiri. AI tidak menggantikan penelitian mendalam dan pemahaman hukum.
  * Orisinalitas Penelitian: Bagian ini akan berisi placeholder. Anda harus menggantinya dengan penelitian terdahulu yang relevan dan analisis perbandingan yang akurat.
  * Batasan Kata: Meskipun ada instruksi panjang kata dalam prompt, AI mungkin tidak selalu mencapai target persis. Lakukan penambahan manual jika diperlukan.
+# Tambahkan baris ini di akhir file README.md
+Pembaruan terakhir untuk memaksa pembersihan cache.
