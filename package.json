@@ -1,16 +1,15 @@
 {
-      "name": "generate-skripsi", // Ganti dengan nama repositori/proyek Anda yang sebenarnya
-      "version": "1.0.0",
-      "description": "Aplikasi Pembuat Draf Skripsi Hukum Otomatis",
-      "main": "public/js/main.js",
-      "scripts": {
-        "start": "netlify dev"
-      },
-      "keywords": [],
-      "author": "",
-      "license": "ISC",
-      "dependencies": {
-        "node-fetch": "^2.6.7" // TAMBAHKAN BARIS INI
-      }
-    }
-    
+  "name": "generate-skripsi",
+  "version": "1.0.0",
+  "description": "Aplikasi Pembuat Draf Skripsi Hukum Otomatis",
+  "main": "public/js/main.js",
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
