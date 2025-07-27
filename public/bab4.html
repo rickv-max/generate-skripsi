@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir BAB IV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Formulir BAB IV – HASIL PENELITIAN DAN PEMBAHASAN</h1>
+
+        <div class="mb-4">
+            <label for="formThesisTopic" class="block text-sm font-medium text-gray-700">Topik Skripsi Hukum:</label>
+            <input type="text" id="formThesisTopic" class="rounded-lg" readonly>
+        </div>
+        <div class="mb-4">
+            <label for="formRumusanMasalah" class="block text-sm font-medium text-gray-700">Rumusan Masalah:</label>
+            <textarea id="formRumusanMasalah" rows="3" class="rounded-lg"></textarea>
+        </div>
+        <p class="text-gray-600 mb-4">
+            BAB IV akan dihasilkan berdasarkan Topik Skripsi dan Rumusan Masalah yang Anda berikan.
+            AI akan membuat sub-bab secara logis untuk membahas rumusan masalah.
+        </p>
+        <div class="flex space-x-4 justify-center mt-6">
+            <button id="generateBabBtn" class="btn-primary flex items-center justify-center">
+                <span id="buttonText">Buat BAB IV</span>
+                <div id="loadingSpinner" class="loading-spinner hidden"></div>
+            </button>
+            <button id="backToHomeBtn" class="btn-secondary">Kembali</button>
+        </div>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
