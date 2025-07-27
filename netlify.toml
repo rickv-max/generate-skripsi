@@ -3,6 +3,9 @@
   functions = "netlify/functions"
   command = "npm install"
 
+[functions]
+  timeout = 25
+
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
 
