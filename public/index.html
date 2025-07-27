@@ -2,99 +2,60 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Thesis Architect</title>
-  <link href="/css/style.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <!-- SIDEBAR -->
-  <div id="sidebar" class="fixed top-0 left-0 w-64 bg-white h-full shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-200 z-40">
-    <div class="p-4 font-bold text-xl border-b">📘 Thesis Architect</div>
-    <nav class="p-4 space-y-2">
-      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-home">🏠 Home</a>
-      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab1">📝 Bab I</a>
-      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab2">📚 Bab II</a>
-      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab3">🔬 Bab III</a>
-      <a href="#" class="nav-link block text-gray-700 hover:text-blue-600" data-target="form-bab4">💡 Bab IV</a>
+<body>
+  <header>
+    <h1>📘 Thesis Architect</h1>
+    <nav>
+      <a href="#" class="nav-link">🏠 Home</a>
+      <a href="#bab1" class="nav-link">📝 Bab I</a>
+      <a href="#bab2" class="nav-link">📚 Bab II</a>
+      <a href="#bab3" class="nav-link">🔬 Bab III</a>
+      <a href="#bab4" class="nav-link">💡 Bab IV</a>
     </nav>
-  </div>
-
-  <!-- OVERLAY MOBILE -->
-  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden"></div>
-
-  <!-- HEADER -->
-  <header class="bg-white shadow-lg p-4 flex justify-between items-center lg:ml-64">
-    <button id="mobile-menu-button" class="lg:hidden">
-      <span id="menu-open-icon">📂</span>
-      <span id="menu-close-icon" class="hidden">❌</span>
-    </button>
-    <h1 class="text-lg font-semibold">Generator Skripsi Otomatis</h1>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="p-4 lg:ml-64 space-y-6">
-    <!-- SECTION: HOME -->
-    <section id="form-home" class="form-section">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-2">📝 Formulir Utama</h2>
-        <label class="block mb-2">Topik Skripsi:</label>
-        <input type="text" id="mainThesisTopic" class="w-full p-2 border rounded mb-4" placeholder="Masukkan topik skripsi Anda" />
-        <label class="block mb-2">Rumusan Masalah:</label>
-        <textarea id="mainRumusanMasalah" class="w-full p-2 border rounded" placeholder="Masukkan rumusan masalah"></textarea>
+  <main>
+    <section class="form-section">
+      <h2>📝 Formulir Utama</h2>
+      <div class="form-group">
+        <label for="topik">Topik Skripsi:</label>
+        <input type="text" id="topik" placeholder="Masukkan topik skripsi Anda" />
+      </div>
+      <div class="form-group">
+        <label for="rumusan">Rumusan Masalah:</label>
+        <textarea id="rumusan" placeholder="Masukkan rumusan masalah"></textarea>
       </div>
     </section>
 
-    <!-- SECTION: BAB 1 -->
-    <section id="form-bab1" class="form-section hidden">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-2">📖 Bab I - Pendahuluan</h2>
-        <button id="generateBab1Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab I</button>
-        <div id="result-bab1" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
-      </div>
+    <section class="bab-section" id="bab1">
+      <h2>📖 Bab I - Pendahuluan</h2>
+      <button onclick="generate('bab1')">🔄 Generate Bab I</button>
+      <div class="output" id="output-bab1"></div>
     </section>
 
-    <!-- SECTION: BAB 2 -->
-    <section id="form-bab2" class="form-section hidden">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-2">📖 Bab II - Tinjauan Pustaka</h2>
-        <button id="generateBab2Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab II</button>
-        <div id="result-bab2" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
-      </div>
+    <section class="bab-section" id="bab2">
+      <h2>📖 Bab II - Tinjauan Pustaka</h2>
+      <button onclick="generate('bab2')">🔄 Generate Bab II</button>
+      <div class="output" id="output-bab2"></div>
     </section>
 
-    <!-- SECTION: BAB 3 -->
-    <section id="form-bab3" class="form-section hidden">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-2">📖 Bab III - Metodologi Penelitian</h2>
-        <button id="generateBab3Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab III</button>
-        <div id="result-bab3" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
-      </div>
+    <section class="bab-section" id="bab3">
+      <h2>📖 Bab III - Metodologi Penelitian</h2>
+      <button onclick="generate('bab3')">🔄 Generate Bab III</button>
+      <div class="output" id="output-bab3"></div>
     </section>
 
-    <!-- SECTION: BAB 4 -->
-    <section id="form-bab4" class="form-section hidden">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-2">📖 Bab IV - Pembahasan</h2>
-        <button id="generateBab4Btn" class="bg-blue-600 text-white px-4 py-2 rounded">🔄 Generate Bab IV</button>
-        <div id="result-bab4" class="result-box hidden whitespace-pre-wrap mt-4 p-4 bg-gray-100 rounded"></div>
-      </div>
-    </section>
-
-    <!-- SECTION: OUTPUT -->
-    <section class="bg-white p-4 rounded shadow">
-      <div class="flex justify-between mb-2">
-        <h2 class="text-xl font-bold">🧾 Pratinjau Keseluruhan</h2>
-        <div class="space-x-2">
-          <button id="copyAllBtn" class="hidden px-3 py-1 bg-green-500 text-white rounded">📋 Salin Semua</button>
-          <button id="clearAllBtn" class="hidden px-3 py-1 bg-red-500 text-white rounded">🧹 Bersihkan</button>
-        </div>
-      </div>
-      <div id="thesisContent" class="whitespace-pre-wrap text-sm text-gray-700 border p-3 rounded max-h-[400px] overflow-y-auto">
-        <p class="text-gray-500">Pratinjau keseluruhan akan muncul di sini.</p>
-      </div>
+    <section class="bab-section" id="bab4">
+      <h2>📖 Bab IV - Hasil & Pembahasan</h2>
+      <button onclick="generate('bab4')">🔄 Generate Bab IV</button>
+      <div class="output" id="output-bab4"></div>
     </section>
   </main>
 
-  <script src="/js/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
