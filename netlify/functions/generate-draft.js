@@ -1,104 +1,109 @@
-// public/js/app.js (VERSI FINAL DENGAN ALAMAT FETCH YANG BARU)
+// netlify/functions/generate-draft.js
 
-document.addEventListener('DOMContentLoaded', () => {
-    // STATE & CACHE
-    const appState = { topic: '', problem: '', generated: {} };
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sidebar = document.getElementById('sidebar');
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const menuOpenIcon = document.getElementById('menu-open-icon');
-    const menuCloseIcon = document.getElementById('menu-close-icon');
-    const sidebarOverlay = document.getElementById('sidebar-overlay');
+// Membutuhkan "mesin" node-fetch agar bisa berfungsi
+const fetch = require('node-fetch');
 
-    // FUNGSI INTI
-    const toggleMenu = () => {
-        sidebar.classList.toggle('-translate-x-full');
-        sidebar.classList.toggle('translate-x-0');
-        sidebarOverlay.classList.toggle('hidden');
-        menuOpenIcon.classList.toggle('hidden');
-        menuCloseIcon.classList.toggle('hidden');
+exports.handler = async (event) => {
+  // Hanya izinkan metode POST
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  // Ambil API Key dari environment variables di Netlify
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'GEMINI_API_KEY tidak ditemukan.' }),
     };
+  }
 
-    const switchView = (targetId) => {
-        document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) targetSection.classList.remove('hidden');
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.dataset.target === targetId) link.classList.add('active');
-        });
-        if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) toggleMenu();
-    };
+  try {
+    // Ambil data dari frontend (app.js)
+    const { topic, problem, chapter } = JSON.parse(event.body);
 
-    const updateDesktopPreview = () => {
-        const desktopPreview = document.getElementById('thesisContent');
-        let fullText = '';
-        let hasContent = false;
-        ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
-            if (appState.generated[bab]) {
-                const title = `BAB ${bab.replace('bab', '')}`;
-                fullText += `<h2>${title}</h2><pre>${appState.generated[bab]}</pre>`;
-                hasContent = true;
-            }
-        });
-        desktopPreview.innerHTML = fullText || `<p class="text-gray-500">Pratinjau keseluruhan akan muncul di sini.</p>`;
-        document.getElementById('copyAllBtn').classList.toggle('hidden', !hasContent);
-        document.getElementById('clearAllBtn').classList.toggle('hidden', !hasContent);
-    };
-
-    async function generateChapter(chapter, button) {
-        const originalButtonText = button.innerHTML;
-        button.disabled = true;
-        button.innerHTML = `<div class="loading-spinner"></div><span>Membuat...</span>`;
-        appState.topic = document.getElementById('mainThesisTopic').value;
-        appState.problem = document.getElementById('mainRumusanMasalah').value;
-        if (!appState.topic || !appState.problem) {
-            alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
-            button.disabled = false; button.innerHTML = originalButtonText; switchView('form-home'); return;
-        }
-        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter };
-        
-        try {
-            // =====================================================================
-            // INI ADALAH SATU-SATUNYA PERUBAHAN: ALAMAT URL TELAH DIGANTI
-            // =====================================================================
-            const response = await fetch('/.netlify/functions/generate-draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || `HTTP error! status: ${response.status}`);
-            if (data.text) {
-                appState.generated[chapter] = data.text;
-                const resultBox = document.getElementById(`result-${chapter}`);
-                resultBox.innerText = data.text;
-                resultBox.classList.remove('hidden');
-                updateDesktopPreview();
-                document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
-            } else { throw new Error("Respons dari server tidak berisi teks."); }
-        } catch (error) {
-            alert(`Gagal memproses draf: ${error.message}`);
-        } finally {
-            button.disabled = false; button.innerHTML = originalButtonText;
-        }
+    // Validasi data
+    if (!topic || !problem || !chapter) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Data tidak lengkap. Topik, rumusan masalah, dan bab dibutuhkan.' }),
+      };
     }
 
-    // EVENT LISTENERS
-    mobileMenuButton.addEventListener('click', toggleMenu);
-    sidebarOverlay.addEventListener('click', toggleMenu);
-    navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchView(e.currentTarget.dataset.target); }); });
-    document.getElementById('generateBab1Btn').addEventListener('click', (e) => generateChapter('bab1', e.currentTarget));
-    document.getElementById('generateBab2Btn').addEventListener('click', (e) => generateChapter('bab2', e.currentTarget));
-    document.getElementById('generateBab3Btn').addEventListener('click', (e) => generateChapter('bab3', e.currentTarget));
-    document.getElementById('generateBab4Btn').addEventListener('click', (e) => generateChapter('bab4', e.currentTarget));
-    
-    document.getElementById('clearAllBtn').addEventListener('click', () => {
-        // ... Logika clear ...
-    });
-    
-    document.getElementById('copyAllBtn').addEventListener('click', () => {
-        // ... Logika copy ...
+    // Bangun prompt sesuai format yang Anda berikan
+    const prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia.
+Tugas Anda adalah membuat draf akademis secara **lengkap, utuh, tidak diringkas**, dan sesuai struktur formal skripsi hukum di Indonesia.
+Gunakan bahasa akademik yang logis, sistematis, dan formal. Panjang isi tidak dibatasi. Tidak boleh menyingkat, meringkas, atau melewatkan bagian penting.
+
+Berikan hasil seolah-olah ini akan dikumpulkan ke dosen pembimbing skripsi fakultas hukum. Jangan sertakan catatan, disclaimer, atau penjelasan tambahan di luar isi skripsi.
+
+Konteks Utama:
+- Topik Skripsi: "${topic}"
+- Rumusan Masalah Utama: "${problem}"
+
+Tugas Spesifik: Buatkan **draf lengkap** untuk **BAB ${chapter.toUpperCase()}** dari skripsi hukum, sesuai struktur standar akademik di Indonesia.\n\n`;
+
+    // Siapkan body permintaan untuk Gemini API
+    const requestBody = {
+      contents: [
+        {
+          parts: [{ text: prompt }]
+        }
+      ],
+      safetySettings: [
+        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+      ], // <-- Koma ini penting
+      
+      // Konfigurasi tambahan yang dibutuhkan oleh model 1.5 Pro
+      generationConfig: {
+        "temperature": 1,
+        "topK": 0,
+        "topP": 0.95,
+        "maxOutputTokens": 8192,
+        "stopSequences": [],
+      }
+    };
+
+    // Panggil model Gemini 1.5 Pro
+    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
+
+    const apiResponse = await fetch(apiURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
     });
 
-    // INISIALISASI
-    switchView('form-home');
-    updateDesktopPreview();
-});
+    const responseData = await apiResponse.json();
+
+    // Periksa apakah respons dari Gemini valid
+    if (
+      responseData.candidates &&
+      responseData.candidates.length > 0 &&
+      responseData.candidates[0].content?.parts
+    ) {
+      const generatedText = responseData.candidates[0].content.parts[0].text;
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ text: generatedText })
+      };
+    } else {
+      // Jika respons tidak valid, catat alasannya
+      const reason =
+        responseData.promptFeedback?.blockReason ||
+        responseData.candidates?.[0]?.finishReason ||
+        'Unknown reason';
+      console.error('Gemini gagal memberikan respons:', reason);
+      throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
+    }
+  } catch (error) {
+    // Tangani semua error lain yang mungkin terjadi
+    console.error('Terjadi error fatal di dalam fungsi:', error.message);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
+  }
+};
