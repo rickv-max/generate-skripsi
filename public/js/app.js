@@ -52,8 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Tambahkan placeholder jika belum ada hasil
         const placeholder = document.getElementById('draft-placeholder');
         if (!hasContent && placeholder) {
-            resultContainer.appendChild(placeholder);
             placeholder.style.display = 'block';
+        } else if (hasContent && placeholder) {
+            placeholder.style.display = 'none';
         }
 
         // Urutkan bab untuk ditampilkan secara konsisten
