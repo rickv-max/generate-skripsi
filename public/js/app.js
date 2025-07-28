@@ -1,4 +1,4 @@
-// public/js/app.js (VERSI FINAL - Sidebar Dark Mode dengan Hasil di Bawah)
+// public/js/app.js (VERSI FINAL - Dengan Placeholder Hasil Draft)
 
 document.addEventListener('DOMContentLoaded', () => {
     // STATE & CACHE
@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
         const targetSection = document.getElementById(targetId);
         if (targetSection) targetSection.classList.remove('hidden');
-        
+
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.dataset.target === targetId) link.classList.add('active');
         });
-        
+
         appState.currentView = targetId;
         if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
             toggleMenu();
@@ -42,30 +42,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const desktopPreview = document.getElementById('thesisContent');
         const resultContainer = document.getElementById('result-container');
         if (!desktopPreview || !resultContainer) return;
-        const placeholder = document.getElementById('draft-placeholder');
-        if (placeholder) placeholder.style.display = 'none';
+
         let fullText = '';
         let hasContent = false;
-        resultContainer.innerHTML = ''; // Selalu kosongkan kontainer hasil utama
+
+        // Kosongkan kontainer hasil utama
+        resultContainer.innerHTML = '';
+
+        // Tambahkan placeholder jika belum ada hasil
+        const placeholder = document.getElementById('draft-placeholder');
+        if (!hasContent && placeholder) {
+            resultContainer.appendChild(placeholder);
+            placeholder.style.display = 'block';
+        }
 
         // Urutkan bab untuk ditampilkan secara konsisten
         ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
             if (appState.generated[bab]) {
-                const titleMap = { bab1: "BAB I: PENDAHULUAN", bab2: "BAB II: TINJAUAN PUSTAKA", bab3: "BAB III: METODE PENELITIAN", bab4: "BAB IV: PEMBAHASAN" };
+                const titleMap = {
+                    bab1: "BAB I: PENDAHULUAN",
+                    bab2: "BAB II: TINJAUAN PUSTAKA",
+                    bab3: "BAB III: METODE PENELITIAN",
+                    bab4: "BAB IV: PEMBAHASAN"
+                };
                 fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
-                
-                // Buat kartu hasil di kontainer hasil utama
-const resultCard = document.createElement('div');
-resultCard.className = 'result-card';
-resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
-resultContainer.appendChild(resultCard);
 
-// Baris tambahan untuk auto-scroll ke kartu yang baru dibuat
-resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Buat kartu hasil
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
+                resultContainer.appendChild(resultCard);
 
-hasContent = true;
+                // Auto-scroll ke hasil baru
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                hasContent = true;
             }
         });
+
+        // Sembunyikan placeholder jika sudah ada hasil
+        if (hasContent && placeholder) {
+            placeholder.style.display = 'none';
+        }
 
         desktopPreview.innerHTML = hasContent ? fullText : `<p class="text-muted">Pratinjau keseluruhan akan muncul di sini.</p>`;
         copyAllBtn.classList.toggle('hidden', !hasContent);
@@ -76,14 +94,14 @@ hasContent = true;
         const originalButtonText = button.textContent;
         button.disabled = true;
         button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
-        
+
         appState.topic = document.getElementById('mainThesisTopic').value;
         appState.problem = document.getElementById('mainRumusanMasalah').value;
         if (!appState.topic || !appState.problem) {
             alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
             button.disabled = false; button.innerHTML = originalButtonText; switchView('form-home'); return;
         }
-        
+
         const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
         if (chapter === 'bab1') {
             payload.details.latarBelakang = document.getElementById('formLatarBelakang').value;
@@ -99,16 +117,20 @@ hasContent = true;
         }
 
         try {
-            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const response = await fetch('/.netlify/functions/generate-thesis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Request gagal');
-            
+
             if (data.text) {
                 appState.generated[chapter] = data.text;
-                updateUI(); // Cukup panggil fungsi ini untuk me-render ulang semua hasil
+                updateUI(); // Render ulang semua hasil
                 document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
-            } else { 
-                throw new Error("Respons dari server tidak berisi teks."); 
+            } else {
+                throw new Error("Respons dari server tidak berisi teks.");
             }
         } catch (error) {
             alert('Gagal: ' + error.message);
@@ -121,18 +143,18 @@ hasContent = true;
     // EVENT LISTENERS
     mobileMenuButton.addEventListener('click', toggleMenu);
     sidebarOverlay.addEventListener('click', toggleMenu);
-    
-    navLinks.forEach(link => { 
-        link.addEventListener('click', (e) => { 
-            e.preventDefault(); 
-            switchView(e.currentTarget.dataset.target); 
-        }); 
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView(e.currentTarget.dataset.target);
+        });
     });
 
     generateButtons.forEach(button => {
         button.addEventListener('click', () => generateChapter(button.dataset.chapter, button));
     });
-    
+
     copyAllBtn.addEventListener('click', () => {
         const textToCopy = document.getElementById('thesisContent').innerText;
         navigator.clipboard.writeText(textToCopy).then(() => {
