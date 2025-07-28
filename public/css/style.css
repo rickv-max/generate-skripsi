@@ -169,9 +169,17 @@ button:disabled {
     overflow-wrap: anywhere;
     word-break: break-word;
 }
-draft-placeholder {
+#draft-placeholder {
     opacity: 0.6;
     border-style: dashed;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    display: block;
+}
+@media (max-width: 640px) {
+    #draft-placeholder {
+        font-size: 0.9rem;
+    }
 }
 
 /* ===== RESPONSIVE FIXES ===== */
