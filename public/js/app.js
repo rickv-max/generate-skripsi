@@ -52,7 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Tambahkan placeholder jika belum ada hasil
         const placeholder = document.getElementById('draft-placeholder');
         if (!hasContent && placeholder) {
-            placeholder.style.display = 'block';
+            // Tampilkan placeholder hanya jika bukan di form-home
+            if (appState.currentView !== 'form-home') {
+                placeholder.style.display = 'block';
+            } else {
+                placeholder.style.display = 'none';
+            }
         } else if (hasContent && placeholder) {
             placeholder.style.display = 'none';
         }
