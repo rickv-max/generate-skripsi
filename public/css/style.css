@@ -67,45 +67,61 @@ body.dark-mode {
 }
 
 /* ===== BUTTONS ===== */
-button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+.generate-button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+    color: white;
+    
+    /* Efek Gradien Utama */
+    background-image: linear-gradient(to right, #3B82F6, #2DD4BF); /* blue-500 to teal-400 */
+    background-size: 200% auto;
+
     border: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 0.75rem; /* rounded-xl */
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-.btn-primary {
-    background-color: var(--accent-blue);
-    color: var(--bg-dark);
+
+.generate-button .button-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    transition: transform 0.3s ease;
 }
-.btn-primary:hover:not(:disabled) {
-    background-color: var(--accent-blue-hover);
-    transform: translateY(-2px);
+
+.generate-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(45, 212, 191, 0.3); /* Shadow dari warna gradien akhir */
+    background-position: right center; /* Menggeser gradien saat hover */
 }
-.btn-secondary,
-.btn-danger {
-    background-color: transparent;
-    color: var(--text-light);
-    border: 1px solid var(--border-color);
+
+.generate-button:hover:not(:disabled) .button-icon {
+    transform: rotate(15deg) scale(1.1);
 }
-.btn-danger {
-    border-color: var(--danger-color);
-    color: var(--danger-color);
-}
-.btn-secondary:hover:not(:disabled) {
-    background-color: var(--border-color);
-}
-.btn-danger:hover:not(:disabled) {
-    background-color: var(--danger-color);
-    color: var(--text-light);
-}
-button:disabled {
+
+.generate-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background-image: none;
+    background-color: var(--border-color);
+}
+
+/* Mengganti warna spinner agar kontras dengan tombol yang terang */
+.generate-button .loading-spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-left-color: #ffffff;
+    margin-right: 0.75rem;
+}
+
+.generate-button .button-text {
+    /* Kelas ini ada untuk jika Anda perlu menata teks secara spesifik */
 }
 
 /* ===== LOADING SPINNER ===== */
