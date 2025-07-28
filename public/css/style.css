@@ -1,4 +1,8 @@
-/* ===== ROOT VARIABLES ===== */
+/* ============================================= */
+/* ===== Thesis Architect - Final Stylesheet ===== */
+/* ============================================= */
+
+/* ===== ROOT VARIABLES (Palet Warna) ===== */
 :root {
     --bg-dark: #111827;
     --bg-card: #1F2937;
@@ -10,16 +14,28 @@
     --danger-color: #F43F5E;
 }
 
-/* ===== GLOBAL STYLES ===== */
+/* ===== GLOBAL STYLES & ANIMATIONS ===== */
 body.dark-mode {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-light);
     background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
     background-size: 30px 30px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== NAVIGATION ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== NAVIGATION (Sidebar) ===== */
 .nav-link {
     display: flex;
     align-items: center;
@@ -41,7 +57,7 @@ body.dark-mode {
 .nav-link.completed::after {
     content: '✔';
     margin-left: auto;
-    color: #4ADE80;
+    color: #4ADE80; /* green-400 */
 }
 
 /* ===== FORM STYLES ===== */
@@ -67,80 +83,93 @@ body.dark-mode {
 }
 
 /* ===== BUTTONS ===== */
+button {
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+/* Tombol CTA Utama (Call to Action) */
 .generate-button {
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 1rem;
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.025em;
     color: white;
-    
-    /* Efek Gradien Utama */
-    background-image: linear-gradient(to right, #3B82F6, #2DD4BF); /* blue-500 to teal-400 */
+    background-image: linear-gradient(to right, #3B82F6, #2DD4BF);
     background-size: 200% auto;
-
-    border: none;
-    border-radius: 0.75rem; /* rounded-xl */
-    
+    border-radius: 0.75rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
-    
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-
 .generate-button .button-icon {
     width: 1.25rem;
     height: 1.25rem;
     margin-right: 0.75rem;
     transition: transform 0.3s ease;
 }
-
 .generate-button:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(45, 212, 191, 0.3); /* Shadow dari warna gradien akhir */
-    background-position: right center; /* Menggeser gradien saat hover */
+    box-shadow: 0 8px 25px rgba(45, 212, 191, 0.3);
+    background-position: right center;
 }
-
 .generate-button:hover:not(:disabled) .button-icon {
     transform: rotate(15deg) scale(1.1);
 }
 
-.generate-button:disabled {
+/* Tombol Sekunder (Salin, Bersihkan, dll.) */
+.btn-secondary, .btn-danger {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+}
+.btn-danger {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--border-color);
+}
+.btn-danger:hover:not(:disabled) {
+    background-color: var(--danger-color);
+    color: var(--text-light);
+}
+
+/* Status Tombol (Disabled, Loading) */
+button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+.generate-button:disabled {
     background-image: none;
     background-color: var(--border-color);
 }
-
-/* Mengganti warna spinner agar kontras dengan tombol yang terang */
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.75rem;
+    animation: spin 1s linear infinite;
+}
 .generate-button .loading-spinner {
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-left-color: #ffffff;
-    margin-right: 0.75rem;
 }
 
-.generate-button .button-text {
-    /* Kelas ini ada untuk jika Anda perlu menata teks secara spesifik */
-}
-
-/* ===== LOADING SPINNER ===== */
-.loading-spinner {
-    border: 3px solid rgba(0, 0, 0, 0.3);
-    border-left-color: var(--bg-dark);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    margin-right: 0.75rem;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ===== PROSE / PREVIEW STYLES ===== */
+/* ===== KARTU HASIL & PRATINJAU ===== */
 .prose h2 {
     font-size: 1.25rem;
     font-weight: 600;
@@ -158,8 +187,6 @@ body.dark-mode {
     font-size: 1rem;
     color: var(--text-muted);
 }
-
-/* ===== RESULT CARD ===== */
 .result-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -167,10 +194,6 @@ body.dark-mode {
     margin-top: 1.5rem;
     padding: 1.5rem;
     animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
 .result-card h3 {
     font-size: 1.125rem;
@@ -182,46 +205,44 @@ body.dark-mode {
     white-space: pre-wrap;
     word-wrap: break-word;
     color: var(--text-muted);
-    overflow-wrap: anywhere;
-    word-break: break-word;
 }
-#draft-placeholder {
-    opacity: 0.6;
-    border-style: dashed;
-    margin-top: 1.5rem;
-    padding: 1.25rem;
-    display: block;
+#result-container:empty {
+    border: 2px dashed var(--border-color);
+    border-radius: 0.75rem;
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    margin-top: 2rem;
 }
-@media (max-width: 640px) {
-    #draft-placeholder {
-        font-size: 0.9rem;
-    }
+#result-container:empty::before {
+    content: "Hasil draf Anda akan muncul di sini...";
 }
 
-/* ===== RESPONSIVE FIXES ===== */
-@media (max-width: 1024px) {
-    .result-card {
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-        padding: 1rem;
-    }
-}
-
+/* ===== RESPONSIVE DESIGN (Media Queries) ===== */
 @media (max-width: 640px) {
-    .result-card {
+    .generate-button {
         padding: 0.75rem;
         font-size: 0.9rem;
     }
+
+    .generate-button .button-icon {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+    }
+
+    .result-card {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
     .result-card pre {
         font-size: 0.85rem;
     }
-}
 
-/* ===== HASIL DRAFT DIBAWAH FORM DI PONSEL ===== */
-@media (max-width: 1023px) {
-    #result-container {
-        display: block;
-        margin-top: 2rem;
+    #result-container:empty {
+        padding: 2rem;
+        font-size: 0.9rem;
     }
 }
