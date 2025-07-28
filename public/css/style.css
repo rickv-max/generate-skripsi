@@ -25,15 +25,8 @@ body.dark-mode {
     -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* ===== NAVIGATION (Sidebar) ===== */
 .nav-link {
@@ -45,22 +38,16 @@ body.dark-mode {
     transition: all 0.2s ease;
     cursor: pointer;
 }
-.nav-link:hover {
-    background-color: var(--border-color);
-    color: var(--text-light);
-}
-.nav-link.active {
-    background-color: var(--accent-blue);
-    color: var(--bg-dark);
-    font-weight: 600;
-}
-.nav-link.completed::after {
-    content: '✔';
-    margin-left: auto;
-    color: #4ADE80; /* green-400 */
-}
+.nav-link:hover { background-color: var(--border-color); color: var(--text-light); }
+.nav-link.active { background-color: var(--accent-blue); color: var(--bg-dark); font-weight: 600; }
+.nav-link.completed::after { content: '✔'; margin-left: auto; color: #4ADE80; }
 
 /* ===== FORM STYLES ===== */
+.form-section h2 { /* Ini untuk judul seperti "Fondasi Skripsi", "Bab I", dll. */
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700;
+    margin-bottom: 1.5rem; /* mb-6 */
+}
 .form-label {
     display: block;
     font-weight: 500;
@@ -81,15 +68,12 @@ body.dark-mode {
     border-color: var(--accent-blue);
     box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
 }
-
-/* ===== BUTTONS ===== */
-button {
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
+.text-muted {
+    color: var(--text-muted);
 }
 
-/* Tombol CTA Utama (Call to Action) */
+/* ===== BUTTONS ===== */
+button { cursor: pointer; transition: all 0.2s; border: none; }
 .generate-button {
     width: 100%;
     display: flex;
@@ -119,11 +103,7 @@ button {
     box-shadow: 0 8px 25px rgba(45, 212, 191, 0.3);
     background-position: right center;
 }
-.generate-button:hover:not(:disabled) .button-icon {
-    transform: rotate(15deg) scale(1.1);
-}
-
-/* Tombol Sekunder (Salin, Bersihkan, dll.) */
+.generate-button:hover:not(:disabled) .button-icon { transform: rotate(15deg) scale(1.1); }
 .btn-secondary, .btn-danger {
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
@@ -135,27 +115,11 @@ button {
     color: var(--text-light);
     border: 1px solid var(--border-color);
 }
-.btn-danger {
-    border-color: var(--danger-color);
-    color: var(--danger-color);
-}
-.btn-secondary:hover:not(:disabled) {
-    background-color: var(--border-color);
-}
-.btn-danger:hover:not(:disabled) {
-    background-color: var(--danger-color);
-    color: var(--text-light);
-}
-
-/* Status Tombol (Disabled, Loading) */
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-.generate-button:disabled {
-    background-image: none;
-    background-color: var(--border-color);
-}
+.btn-danger { border-color: var(--danger-color); color: var(--danger-color); }
+.btn-secondary:hover:not(:disabled) { background-color: var(--border-color); }
+.btn-danger:hover:not(:disabled) { background-color: var(--danger-color); color: var(--text-light); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.generate-button:disabled { background-image: none; background-color: var(--border-color); }
 .loading-spinner {
     width: 20px;
     height: 20px;
@@ -163,8 +127,6 @@ button:disabled {
     display: inline-block;
     margin-right: 0.75rem;
     animation: spin 1s linear infinite;
-}
-.generate-button .loading-spinner {
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-left-color: #ffffff;
 }
@@ -219,8 +181,32 @@ button:disabled {
     content: "Hasil draf Anda akan muncul di sini...";
 }
 
-/* ===== RESPONSIVE DESIGN (Media Queries) ===== */
+/* ========================================================= */
+/* ===== RESPONSIVE DESIGN (Media Queries untuk Ponsel) ===== */
+/* ========================================================= */
 @media (max-width: 640px) {
+    /* Mengecilkan judul utama di setiap halaman */
+    .form-section h2 {
+        font-size: 1.5rem; /* Dari 3xl menjadi 2xl */
+        margin-bottom: 1rem;
+    }
+
+    /* Mengecilkan label form utama */
+    .form-label {
+        font-size: 0.875rem; /* text-sm */
+    }
+
+    /* Mengecilkan teks placeholder */
+    .form-input::placeholder {
+        font-size: 0.875rem;
+    }
+
+    /* Mengecilkan paragraf deskripsi */
+    .text-muted {
+        font-size: 0.875rem;
+    }
+
+    /* Mengecilkan tombol CTA */
     .generate-button {
         padding: 0.75rem;
         font-size: 0.9rem;
@@ -232,6 +218,7 @@ button:disabled {
         margin-right: 0.5rem;
     }
 
+    /* Mengecilkan kartu hasil */
     .result-card {
         padding: 1rem;
         font-size: 0.9rem;
@@ -241,6 +228,7 @@ button:disabled {
         font-size: 0.85rem;
     }
 
+    /* Mengecilkan placeholder hasil */
     #result-container:empty {
         padding: 2rem;
         font-size: 0.9rem;
