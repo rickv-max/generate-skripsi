@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const desktopPreview = document.getElementById('thesisContent');
         const resultContainer = document.getElementById('result-container');
         if (!desktopPreview || !resultContainer) return;
-
+        const placeholder = document.getElementById('draft-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
         let fullText = '';
         let hasContent = false;
         resultContainer.innerHTML = ''; // Selalu kosongkan kontainer hasil utama
