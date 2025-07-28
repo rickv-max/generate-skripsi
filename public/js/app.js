@@ -39,62 +39,54 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateUI = () => {
-        const desktopPreview = document.getElementById('thesisContent');
-        const resultContainer = document.getElementById('result-container');
-        if (!desktopPreview || !resultContainer) return;
+    const desktopPreview = document.getElementById('thesisContent');
+    const resultContainer = document.getElementById('result-container');
+    const placeholder = document.getElementById('draft-placeholder');
+    if (!desktopPreview || !resultContainer || !placeholder) return;
 
-        let fullText = '';
-        let hasContent = false;
+    let fullText = '';
+    let hasContent = false;
 
-        // Kosongkan kontainer hasil utama
-        resultContainer.innerHTML = '';
+    // Kosongkan container hasil
+    resultContainer.innerHTML = '';
 
-        // Tambahkan placeholder jika belum ada hasil
-        const placeholder = document.getElementById('draft-placeholder');
-        if (!hasContent && placeholder) {
-            // Tampilkan placeholder hanya jika bukan di form-home
-            if (appState.currentView !== 'form-home') {
-                placeholder.style.display = 'block';
-            } else {
-                placeholder.style.display = 'none';
-            }
-        } else if (hasContent && placeholder) {
-            placeholder.style.display = 'none';
+    // Tambahkan hasil jika ada
+    ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
+        if (appState.generated[bab]) {
+            const titleMap = {
+                bab1: "BAB I: PENDAHULUAN",
+                bab2: "BAB II: TINJAUAN PUSTAKA",
+                bab3: "BAB III: METODE PENELITIAN",
+                bab4: "BAB IV: PEMBAHASAN"
+            };
+            fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
+
+            const resultCard = document.createElement('div');
+            resultCard.className = 'result-card';
+            resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
+            resultContainer.appendChild(resultCard);
+
+            hasContent = true;
         }
+    });
 
-        // Urutkan bab untuk ditampilkan secara konsisten
-        ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
-            if (appState.generated[bab]) {
-                const titleMap = {
-                    bab1: "BAB I: PENDAHULUAN",
-                    bab2: "BAB II: TINJAUAN PUSTAKA",
-                    bab3: "BAB III: METODE PENELITIAN",
-                    bab4: "BAB IV: PEMBAHASAN"
-                };
-                fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
+    // Tampilkan placeholder jika belum ada hasil DAN bukan di halaman form-home
+    if (!hasContent && appState.currentView !== 'form-home') {
+        resultContainer.appendChild(placeholder);
+        placeholder.style.display = 'block';
+    } else {
+        placeholder.style.display = 'none';
+    }
 
-                // Buat kartu hasil
-                const resultCard = document.createElement('div');
-                resultCard.className = 'result-card';
-                resultCard.innerHTML = `<h3>${titleMap[bab]}</h3><pre>${appState.generated[bab]}</pre>`;
-                resultContainer.appendChild(resultCard);
+    // Desktop pratinjau
+    desktopPreview.innerHTML = hasContent
+        ? fullText
+        : `<p class="text-muted">Pratinjau keseluruhan akan muncul di sini.</p>`;
 
-                // Auto-scroll ke hasil baru
-                resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                hasContent = true;
-            }
-        });
-
-        // Sembunyikan placeholder jika sudah ada hasil
-        if (hasContent && placeholder) {
-            placeholder.style.display = 'none';
-        }
-
-        desktopPreview.innerHTML = hasContent ? fullText : `<p class="text-muted">Pratinjau keseluruhan akan muncul di sini.</p>`;
-        copyAllBtn.classList.toggle('hidden', !hasContent);
-        clearAllBtn.classList.toggle('hidden', !hasContent);
-    };
+    // Tombol salin dan bersihkan
+    copyAllBtn.classList.toggle('hidden', !hasContent);
+    clearAllBtn.classList.toggle('hidden', !hasContent);
+};
 
     async function generateChapter(chapter, button) {
         const originalButtonText = button.textContent;
