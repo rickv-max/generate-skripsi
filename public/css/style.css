@@ -77,3 +77,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
     overflow-wrap: anywhere;
     word-break: break-word;
 }
+@media (max-width: 1023px) {
+    #result-container {
+        display: block;
+        margin-top: 2rem;
+    }
+}
