@@ -234,3 +234,52 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
         font-size: 0.9rem;
     }
 }
+.paraphrase-reminder {
+display: flex;
+align-items: flex-start;
+gap: 1rem; /* Jarak antara ikon dan teks /
+background-color: var(--bg-card);
+border: 1px solid var(--border-color);
+border-left: 4px solid var(--accent-blue); / Aksen di kiri /
+border-radius: 0.75rem;
+padding: 1.5rem;
+margin-top: 2rem; / Jarak dari form di atasnya */
+margin-bottom: 2rem;
+animation: fadeIn 0.8s ease-out;
+}
+
+.paraphrase-reminder svg {
+flex-shrink: 0;
+width: 1.5rem;
+height: 1.5rem;
+color: var(--accent-blue);
+margin-top: 0.125rem;
+}
+
+.paraphrase-reminder p {
+font-size: 0.875rem;
+color: var(--text-muted);
+line-height: 1.6;
+margin: 0;
+}
+
+.paraphrase-reminder p strong {
+color: var(--text-light);
+display: block;
+margin-bottom: 0.25rem;
+}
+
+.paraphrase-reminder a {
+display: inline-block; /* Agar bisa diberi margin-top */
+margin-top: 0.75rem;
+color: var(--accent-blue);
+font-weight: 600;
+text-decoration: none;
+transition: all 0.2s ease;
+font-size: 0.875rem;
+}
+
+.paraphrase-reminder a:hover {
+color: var(--accent-blue-hover);
+transform: translateX(2px); /* Efek hover kecil */
+}
