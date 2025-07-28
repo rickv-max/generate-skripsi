@@ -169,6 +169,10 @@ button:disabled {
     overflow-wrap: anywhere;
     word-break: break-word;
 }
+draft-placeholder {
+    opacity: 0.6;
+    border-style: dashed;
+}
 
 /* ===== RESPONSIVE FIXES ===== */
 @media (max-width: 1024px) {
