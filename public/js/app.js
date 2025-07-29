@@ -156,6 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('completed'));
             updateUI();
         }
+        window.addEventListener('load', () => {
+        if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+        }
+    });
     });
 
     // INISIALISASI
