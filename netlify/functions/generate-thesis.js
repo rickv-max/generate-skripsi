@@ -29,7 +29,7 @@ exports.handler = async (event) => {
     // INI ADALAH BAGIAN YANG KITA SEMPURNAKAN
     // =====================================================================
     let prompt = `Anda adalah seorang asisten ahli penulisan skripsi hukum di Indonesia dengan standar kualitas tertinggi.
-Tugas Anda adalah membuat draf akademis yang **sangat detail, komprehensif, mendalam, dan panjang**. Setiap sub-bab harus diuraikan setidaknya dalam **empat paragraf yang kaya isi**, dengan analisis dan elaborasi yang jelas. Gunakan bahasa Indonesia akademik yang formal, logis, dan sistematis.
+Tugas Anda adalah membuat draf akademis yang **sangat detail, komprehensif, mendalam, dan panjang**. Setiap sub-bab harus diuraikan setidaknya dalam **tiga paragraf yang kaya isi**, dengan analisis dan elaborasi yang jelas. Gunakan bahasa Indonesia akademik yang formal, logis, dan sistematis.
 
 Konteks Utama:
 - Topik Skripsi: "${topic}"
@@ -48,13 +48,13 @@ Tugas Spesifik: Buatkan **draf yang sangat lengkap dan mendalam** untuk **BAB ${
         case 'bab2':
             prompt += `Struktur BAB II - TINJAUAN PUSTAKA:
             - Buat Tinjauan Umum yang komprehensif tentang konsep-konsep dasar yang melandasi topik "${topic}". Jelaskan setiap konsep kunci dalam paragraf-paragraf yang mendalam.
-            - Bahas secara mendalam (minimal empat paragraf per teori) mengenai landasan teori, asas-asas hukum, dan doktrin-doktrin yang relevan. ${details.subtopics ? `Berikan fokus analisis khusus pada sub-topik berikut: ${details.subtopics}.` : ''}
+            - Bahas secara mendalam (minimal tiga paragraf per teori) mengenai landasan teori, asas-asas hukum, dan doktrin-doktrin yang relevan. ${details.subtopics ? `Berikan fokus analisis khusus pada sub-topik berikut: ${details.subtopics}.` : ''}
             - Jelaskan kerangka hukum (peraturan perundang-undangan) yang terkait dengan topik, dari level tertinggi (UUD) hingga peraturan teknis jika ada.`;
             break;
         case 'bab3':
             prompt += `Struktur BAB III - METODE PENELITIAN:
             - Berikan pengantar singkat tentang tujuan dari bab metodologi penelitian.
-            - Buat sub-bab 3.1 Pendekatan Penelitian: Jelaskan secara mendalam (minimal empat paragraf) pendekatan penelitian yang dipilih. ${details.pendekatan ? `Fokus pada pendekatan: "${details.pendekatan}"` : 'Sarankan pendekatan yang paling cocok (misal: yuridis normatif atau yuridis empiris) dan jelaskan mengapa pendekatan tersebut adalah yang paling tepat.'}
+            - Buat sub-bab 3.1 Pendekatan Penelitian: Jelaskan secara mendalam (minimal tiga paragraf) pendekatan penelitian yang dipilih. ${details.pendekatan ? `Fokus pada pendekatan: "${details.pendekatan}"` : 'Sarankan pendekatan yang paling cocok (misal: yuridis normatif atau yuridis empiris) dan jelaskan mengapa pendekatan tersebut adalah yang paling tepat.'}
             - Buat sub-bab 3.2 Jenis Penelitian: Uraikan jenis penelitian yang digunakan (misal: deskriptif analitis) dan jelaskan relevansinya dengan tujuan penelitian.
             - Buat sub-bab 3.3 Lokasi Penelitian: Jelaskan secara detail lokasi penelitian. ${details.lokasi ? `Gunakan preferensi pengguna ini: "${details.lokasi}"` : 'Jika tidak ada lokasi fisik, jelaskan secara detail bahwa penelitian ini adalah studi kepustakaan dan jelaskan ruang lingkupnya.'}
             - Buat sub-bab 3.4 Metode Pengumpulan Data: Uraikan teknik pengumpulan data yang digunakan (misal: studi dokumen, wawancara). Jelaskan secara rinci bagaimana setiap teknik akan dilaksanakan.
@@ -64,7 +64,7 @@ Tugas Spesifik: Buatkan **draf yang sangat lengkap dan mendalam** untuk **BAB ${
             prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
             - Buat struktur pembahasan yang sistematis dan logis, di mana setiap sub-bab secara langsung menjawab satu aspek dari rumusan masalah: "${problem}".
             - Untuk setiap sub-bab, sajikan analisis yang **sangat mendalam, kritis, dan komprehensif**. Jangan hanya mendeskripsikan, tetapi juga menganalisis, membandingkan, dan menginterpretasikan data dengan menggunakan kerangka teori dan hukum dari Bab II.
-            - Pastikan setiap sub-bab diuraikan dalam **minimal empat paragraf yang kaya dan substantif**.`;
+            - Pastikan setiap sub-bab diuraikan dalam **minimal tiga paragraf yang kaya dan substantif**.`;
             break;
     }
 
