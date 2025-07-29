@@ -93,8 +93,11 @@ Berdasarkan informasi di atas, tolong buatkan draf untuk BAB ${chapter.replace('
       const generatedText = responseData.candidates[0].content.parts[0].text;
       return { statusCode: 200, body: JSON.stringify({ text: generatedText }) };
     } else {
-      const reason = responseData.promptFeedback?.blockReason || responseData.candidates?.[0]?.finishReason || 'Unknown reason';
-      throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
+      console.log('Full Gemini Response:', JSON.stringify(responseData, null, 2));
+const reason = responseData.promptFeedback?.blockReason || 
+               responseData.candidates?.[0]?.finishReason || 
+               'Unknown reason';
+throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
     }
   } catch (error) {
     console.error('Terjadi error:', error.message);
