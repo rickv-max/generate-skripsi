@@ -54,12 +54,21 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
         break;
 
       case 'bab3':
-        prompt += `Struktur BAB III - METODOLOGI PENELITIAN:
-- Jenis penelitian: "${details.jenisPenelitian || ''}"
-- Pendekatan: "${details.pendekatan || ''}"
-- Sumber data primer dan sekunder
-- Teknik pengumpulan dan analisis data`;
-        break;
+            prompt += `Struktur BAB III - METODE PENELITIAN:
+            - Berikan pengantar singkat tentang metodologi yang digunakan.
+            - Uraikan secara jelas dan akademis sub-bab berikut:
+              1. Pendekatan Penelitian (Contoh: Yuridis Normatif).
+              2. Jenis Penelitian (Contoh: Deskriptif Analitis).
+              3. Lokasi atau Ruang Lingkup Penelitian.
+              4. Teknik Pengumpulan Data (Contoh: Studi Kepustakaan).
+              5. Teknik Analisis Data (Contoh: Analisis Kualitatif).
+            - Jika pengguna memberikan masukan di bawah, gunakan itu sebagai referensi utama:
+              - Masukan untuk Pendekatan: ${details.pendekatan || 'Tidak ada'}
+              - Masukan untuk Jenis: ${details.jenis || 'Tidak ada'}
+              - Masukan untuk Lokasi: ${details.lokasi || 'Tidak ada'}
+              - Masukan untuk Pengumpulan Data: ${details.metodePengumpulanData || 'Tidak ada'}
+              - Masukan untuk Analisis Data: ${details.modelAnalisis || 'Tidak ada'}`;
+            break;
 
       case 'bab4':
         prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
