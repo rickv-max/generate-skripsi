@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // STATE & CACHE
+    const loadingScreen = document.getElementById('loading-screen');
     const appState = { topic: '', problem: '', generated: {}, currentView: 'form-home' };
     const navLinks = document.querySelectorAll('.nav-link');
     const sidebar = document.getElementById('sidebar');
