@@ -81,24 +81,36 @@ Berdasarkan informasi di atas, tolong buatkan draf untuk BAB ${chapter.replace('
 
     const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
-    const apiResponse = await fetch(apiURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    });
+    let retries = 3;
+let responseData;
 
-    const responseData = await apiResponse.json();
+while (retries > 0) {
+  const apiResponse = await fetch(apiURL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestBody)
+  });
 
+  responseData = await apiResponse.json();
+
+  if (!responseData.error || responseData.error.code !== 503) break;
+
+  console.warn('Model overloaded, mencoba ulang...');
+  await new Promise(res => setTimeout(res, 2000)); // tunggu 2 detik
+  retries--;
+}
+
+if (responseData.error) {
+  throw new Error(`Gemini gagal: ${responseData.error.message}`);
+}
     if ( responseData.candidates && responseData.candidates.length > 0 && responseData.candidates[0].content?.parts ) {
       const generatedText = responseData.candidates[0].content.parts[0].text;
       return { statusCode: 200, body: JSON.stringify({ text: generatedText }) };
     } else {
       console.log('Full Gemini Response:', JSON.stringify(responseData, null, 2));
-const reason = responseData.promptFeedback?.blockReason || 
-               responseData.candidates?.[0]?.finishReason || 
-               'Unknown reason';
-throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
-    }
+if (responseData.error) {
+  throw new Error(`Gemini gagal: ${responseData.error.message}`);
+}
   } catch (error) {
     console.error('Terjadi error:', error.message);
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
