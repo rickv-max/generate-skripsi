@@ -338,8 +338,6 @@ transform: translateX(2px); /* Efek hover kecil */
 /* Konten di tengah loading screen */
 .loading-content {
     text-align: center;
-    position: relative; 
-    padding-bottom: 4rem; 
 }
 
 /* Animasi Staggered (muncul satu per satu) untuk setiap elemen */
