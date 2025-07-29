@@ -377,7 +377,7 @@ transform: translateX(2px); /* Efek hover kecil */
   inset: 0 100% 0 0;
   border-radius: inherit;
   background: currentColor; /* Menggunakan warna dari parent (.loader) */
-  animation: loading-fill 2s infinite cubic-bezier(0.6, 0.1, 0.3, 1); /* Animasi pengisian, 2 detik, dengan easing yang lebih halus */
+  animation: loading-fill 3s forwards cubic-bezier(0.4, 0.2, 0.2, 1); /* Animasi pengisian, 2 detik, dengan easing yang lebih halus */
 }
 
 .loading-text {
