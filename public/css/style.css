@@ -348,15 +348,36 @@ transform: translateX(2px); /* Efek hover kecil */
     animation-delay: 0.2s;
 }
 
-.loading-spinner-main {
-    width: 2rem;
-    height: 2rem;
-    border: 3px solid var(--border-color);
-    border-top-color: var(--accent-blue);
-    border-radius: 50%;
-    margin: 1.5rem auto;
-    animation: spin 1.2s linear infinite, fadeInUp 0.8s ease-out forwards;
-    animation-delay: 0.4s;
+/* Definisikan keyframes untuk animasi pengisian */
+@keyframes loading-fill {
+    100% {inset: 0}
+}
+
+.loader {
+  width: 150px; /* Sedikit lebih lebar agar terlihat bagus */
+  height: 20px; /* Sedikit lebih ramping */
+  border-radius: 20px;
+  color: var(--accent-blue); /* Menggunakan warna aksen kita */
+  border: 2px solid;
+  position: relative;
+  
+  /* Menempatkannya di antara logo dan teks */
+  margin: 1.5rem auto;
+
+  /* Menerapkan animasi staggered seperti elemen lainnya */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.4s; /* Muncul kedua */
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  margin: 2px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: currentColor; /* Menggunakan warna dari parent (.loader) */
+  animation: loading-fill 2s infinite cubic-bezier(0.6, 0.1, 0.3, 1); /* Animasi pengisian, 2 detik, dengan easing yang lebih halus */
 }
 
 .loading-text {
