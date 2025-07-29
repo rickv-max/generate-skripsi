@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loadingScreen) {
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
-        }, 2500); // 100 milidetik sudah cukup
+        }, 3400); // 100 milidetik sudah cukup
     }
     const appState = { topic: '', problem: '', generated: {}, currentView: 'form-home' };
     const navLinks = document.querySelectorAll('.nav-link');
