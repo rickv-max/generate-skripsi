@@ -298,18 +298,34 @@ font-size: 0.875rem;
 color: var(--accent-blue-hover);
 transform: translateX(2px); /* Efek hover kecil */
 }
+/* ========================================================= */
+/* GAYA BARU UNTUK LOADING SCREEN MODERN (TAMBAHKAN INI DI AKHIR) */
+/* ========================================================= */
+
+/* Definisikan animasi baru */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .loading-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--bg-dark); /* Warna latar yang sama */
+    background-color: var(--bg-dark);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+    transition: opacity 0.8s ease-out 0.5s, visibility 0.8s ease-out 0.5s; /* Tambahkan delay sebelum fade out */
 }
 
 .loading-screen.hidden {
@@ -319,29 +335,51 @@ transform: translateX(2px); /* Efek hover kecil */
 
 .loading-content {
     text-align: center;
-    animation: fadeIn 1s ease-in-out;
+}
+
+/* Animasi Staggered untuk setiap elemen */
+.loading-logo, .loading-spinner-main, .loading-text, .loading-creator {
+    opacity: 0; /* Mulai dari transparan */
+    animation: fadeInUp 0.8s ease-out forwards; /* Terapkan animasi */
 }
 
 .loading-logo {
-    font-size: 2.25rem; /* 4xl */
+    font-size: 2.25rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     color: var(--text-light);
+    animation-delay: 0.2s; /* Muncul pertama */
 }
 
 .loading-spinner-main {
-    width: 2rem; /* 32px */
-    height: 2rem; /* 32px */
+    width: 2rem;
+    height: 2rem;
     border: 3px solid var(--border-color);
     border-top-color: var(--accent-blue);
     border-radius: 50%;
-    margin: 1.5rem auto; /* Jarak atas/bawah */
-    animation: spin 1.2s linear infinite;
+    margin: 1.5rem auto;
+    animation: spin 1.2s linear infinite, fadeInUp 0.8s ease-out forwards;
+    animation-delay: 0.4s; /* Muncul kedua */
 }
 
 .loading-text {
-    font-size: 0.875rem; /* text-sm */
+    font-size: 0.875rem;
     color: var(--text-muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    animation-delay: 0.6s; /* Muncul ketiga */
+}
+
+.loading-creator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    animation-delay: 0.8s; /* Muncul terakhir */
+}
+.loading-creator strong {
+    color: var(--text-light);
+    font-weight: 500;
 }
