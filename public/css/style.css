@@ -301,17 +301,9 @@ transform: translateX(2px); /* Efek hover kecil */
 /* ========================================================= */
 /* ===== GAYA UNTUK LOADING SCREEN MODERN (VERSI BERSIH) ===== */
 /* ========================================================= */
-
-/* Definisikan animasi yang akan digunakan */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Kontainer utama yang menutupi seluruh layar */
@@ -322,11 +314,9 @@ transform: translateX(2px); /* Efek hover kecil */
     width: 100%;
     height: 100%;
     background-color: var(--bg-dark);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Pastikan ini adalah lapisan paling atas */
-    transition: opacity 0.8s ease-out 0.5s, visibility 0.8s ease-out 0.5s; /* Animasi fade-out dengan delay */
+    z-index: 9999;
+    transition: opacity 0.8s ease-out 0.5s, visibility 0.8s ease-out 0.5s;
+    /* PENTING: display: flex telah dihapus untuk menghindari konflik */
 }
 
 /* Kelas untuk menyembunyikan loading screen */
@@ -335,25 +325,27 @@ transform: translateX(2px); /* Efek hover kecil */
     visibility: hidden;
 }
 
-/* Konten di tengah loading screen */
+/* Konten di tengah loading screen (Metode Penempatan Baru) */
 .loading-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Trik centering paling andal */
     text-align: center;
-    position: relative;
-    padding-bottom: 4rem;
+    width: 100%; /* Pastikan tidak menyusut */
 }
 
 /* Animasi Staggered (muncul satu per satu) untuk setiap elemen */
 .loading-logo, .loading-spinner-main, .loading-text, .loading-creator {
-    opacity: 0; /* Mulai dari transparan */
-    animation: fadeInUp 0.8s ease-out forwards; /* Terapkan animasi fade-in-up */
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .loading-logo {
     font-size: 2.25rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
     color: var(--text-light);
-    animation-delay: 0.2s; /* Muncul pertama */
+    animation-delay: 0.2s;
 }
 
 .loading-spinner-main {
@@ -363,27 +355,26 @@ transform: translateX(2px); /* Efek hover kecil */
     border-top-color: var(--accent-blue);
     border-radius: 50%;
     margin: 1.5rem auto;
-    /* Terapkan dua animasi: berputar selamanya, dan muncul sekali */
     animation: spin 1.2s linear infinite, fadeInUp 0.8s ease-out forwards;
-    animation-delay: 0.4s; /* Muncul kedua */
+    animation-delay: 0.4s;
 }
 
 .loading-text {
     font-size: 0.875rem;
     color: var(--text-muted);
-    letter-spacing: 0.1em;
     text-transform: uppercase;
-    animation-delay: 0.6s; /* Muncul ketiga */
+    animation-delay: 0.6s;
 }
 
+/* Nama Anda (Metode Penempatan Baru) */
 .loading-creator {
-    position: absolute;
+    position: absolute; /* Sekarang relatif terhadap .loading-screen */
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.75rem;
     color: var(--text-muted);
-    animation-delay: 0.8s; /* Muncul terakhir */
+    animation-delay: 0.8s;
 }
 .loading-creator strong {
     color: var(--text-light);
