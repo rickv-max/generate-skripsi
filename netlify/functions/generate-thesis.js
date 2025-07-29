@@ -79,7 +79,7 @@ Tugas Spesifik: Buatkan **draf yang sangat lengkap dan mendalam** untuk **BAB ${
       generationConfig: { "temperature": 0.8, "topP": 0.95, "maxOutputTokens": 8192 }
     };
 
-    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
     const apiResponse = await fetch(apiURL, {
       method: 'POST',
