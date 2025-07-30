@@ -55,7 +55,6 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
 
       case 'bab3':
         prompt += `Struktur BAB III - METODE PENELITIAN:
-        prompt += `Struktur BAB III - METODE PENELITIAN:
     - Berikan pengantar singkat yang menjelaskan pentingnya bab metodologi ini.
     - Uraikan secara **sangat mendalam** setiap sub-bab berikut, di mana **masing-masing sub-bab harus terdiri dari minimal empat paragraf yang terstruktur dengan baik**:
 
