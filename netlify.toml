@@ -7,3 +7,4 @@
 
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
+# Perubahan FINAL untuk memaksa deploy ulang yang bersih pada 30 Juli
