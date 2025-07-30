@@ -1,0 +1,9 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  "*" = { timeout = 90 }
+
+[[plugins]]
+  package = "@netlify/plugin-functions-install-core"
