@@ -42,6 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
             toggleMenu();
         }
+        // Sembunyikan hasil jika di halaman form-home
+        const resultContainer = document.getElementById('result-container');
+        if (targetId === 'form-home' && resultContainer) {
+            resultContainer.classList.add('hidden');
+        } else if (resultContainer && Object.values(appState.generated).length > 0) {
+            resultContainer.classList.remove('hidden');
+        }
     };
 
     const updateUI = () => {
