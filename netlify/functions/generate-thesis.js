@@ -54,28 +54,28 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
         break;
 
       case 'bab3':
-        prompt += `Struktur BAB III - METODE PENELITIAN:
-    - Berikan pengantar singkat yang menjelaskan pentingnya bab metodologi ini.
-    - Uraikan secara **sangat mendalam** setiap sub-bab berikut, di mana **masing-masing sub-bab harus terdiri dari minimal empat paragraf yang terstruktur dengan baik**:
+  prompt += `Struktur BAB III - METODE PENELITIAN:
+- Berikan pengantar singkat yang menjelaskan pentingnya bab metodologi ini.
+- Uraikan secara sangat mendalam setiap sub-bab berikut, di mana masing-masing sub-bab harus terdiri dari minimal empat paragraf yang terstruktur dengan baik:
 
-      **1. Sub-bab Pendekatan Penelitian:**
-        - Paragraf 1: Jelaskan definisi dan tujuan umum dari pendekatan penelitian dalam sebuah karya tulis ilmiah hukum.
-        - Paragraf 2: Uraikan beberapa jenis pendekatan yang umum digunakan (contohnya yuridis normatif, yuridis empiris, socio-legal) beserta perbedaannya.
-        - Paragraf 3: Berikan justifikasi akademis yang kuat mengapa pendekatan tertentu adalah yang paling tepat untuk menganalisis topik "${topic}" dan menjawab rumusan masalah "${problem}". ${details.pendekatan ? `Prioritaskan dan jelaskan secara detail pendekatan yang disarankan pengguna: "${details.pendekatan}".` : 'Sarankan pendekatan yang paling logis jika pengguna tidak memberikan masukan.'}
-        - Paragraf 4: Detailkan bagaimana pendekatan yang dipilih tersebut akan diimplementasikan secara praktis dalam analisis di bab-bab selanjutnya.
+3.1. Sub-bab Pendekatan Penelitian:
+  - Paragraf 1: Jelaskan definisi dan tujuan umum dari pendekatan penelitian dalam sebuah karya tulis ilmiah hukum.
+  - Paragraf 2: Uraikan beberapa jenis pendekatan yang umum digunakan (contohnya yuridis normatif, yuridis empiris, socio-legal) beserta perbedaannya.
+  - Paragraf 3: Berikan justifikasi akademis yang kuat mengapa pendekatan tertentu adalah yang paling tepat untuk menganalisis topik "${topic}" dan menjawab rumusan masalah "${problem}". ${details.pendekatan ? `Prioritaskan dan jelaskan secara detail pendekatan yang disarankan pengguna: "${details.pendekatan}".` : 'Sarankan pendekatan yang paling logis jika pengguna tidak memberikan masukan.'}
+  - Paragraf 4: Detailkan bagaimana pendekatan yang dipilih tersebut akan diimplementasikan secara praktis dalam analisis di bab-bab selanjutnya.
 
-      **2. Sub-bab Jenis Penelitian:**
-        - Uraikan dalam minimal empat paragraf, jelaskan apa itu jenis penelitian, sebutkan beberapa contoh (deskriptif, eksplanatif, preskriptif), dan berikan justifikasi kuat mengapa jenis tertentu (misalnya deskriptif analitis) dipilih. ${details.jenis ? `Gunakan preferensi pengguna ini: "${details.jenis}".` : ''}
+3.2. Sub-bab Jenis Penelitian:
+  - Uraikan dalam minimal empat paragraf. Jelaskan apa itu jenis penelitian, sebutkan beberapa contoh (deskriptif, eksplanatif, preskriptif), dan berikan justifikasi kuat mengapa jenis tertentu (misalnya deskriptif analitis) dipilih. ${details.jenis ? `Gunakan preferensi pengguna ini: "${details.jenis}".` : ''}
 
-      **3. Sub-bab Lokasi atau Ruang Lingkup Penelitian:**
-        - Uraikan dalam minimal empat paragraf. Jelaskan secara detail lokasi fisik penelitian atau, jika merupakan studi kepustakaan, jelaskan secara rinci batasan dan ruang lingkup bahan hukum yang akan diteliti. ${details.lokasi ? `Gunakan preferensi pengguna ini: "${details.lokasi}".` : ''}
+3.3. Sub-bab Lokasi atau Ruang Lingkup Penelitian:
+  - Uraikan dalam minimal empat paragraf. Jelaskan secara detail lokasi fisik penelitian atau, jika merupakan studi kepustakaan, jelaskan secara rinci batasan dan ruang lingkup bahan hukum yang akan diteliti. ${details.lokasi ? `Gunakan preferensi pengguna ini: "${details.lokasi}".` : ''}
 
-      **4. Sub-bab Teknik Pengumpulan Data:**
-        - Uraikan dalam minimal empat paragraf. Jelaskan secara mendalam teknik yang digunakan (misalnya studi dokumen/kepustakaan atau wawancara), bagaimana teknik itu akan dijalankan, dan mengapa teknik itu paling relevan. ${details.metodePengumpulanData ? `Gunakan preferensi pengguna ini: "${details.metodePengumpulanData}".` : ''}
-        
-      **5. Sub-bab Teknik Analisis Data:**
-        - Uraikan dalam minimal empat paragraf. Jelaskan secara komprehensif bagaimana data yang terkumpul akan dianalisis (misalnya analisis kualitatif). Detailkan langkah-langkah analisisnya (reduksi data, penyajian data, penarikan kesimpulan) dan bagaimana analisis itu akan digunakan untuk menjawab rumusan masalah. ${details.modelAnalisis ? `Gunakan preferensi pengguna ini: "${details.modelAnalisis}".` : ''}`;
-    break;
+3.4. Sub-bab Teknik Pengumpulan Data:
+  - Uraikan dalam minimal empat paragraf. Jelaskan secara mendalam teknik yang digunakan (misalnya studi dokumen/kepustakaan atau wawancara), bagaimana teknik itu akan dijalankan, dan mengapa teknik itu paling relevan. ${details.metodePengumpulanData ? `Gunakan preferensi pengguna ini: "${details.metodePengumpulanData}".` : ''}
+
+3.5. Sub-bab Teknik Analisis Data:
+  - Uraikan dalam minimal empat paragraf. Jelaskan secara komprehensif bagaimana data yang terkumpul akan dianalisis (misalnya analisis kualitatif). Detailkan langkah-langkah analisisnya (reduksi data, penyajian data, penarikan kesimpulan) dan bagaimana analisis itu akan digunakan untuk menjawab rumusan masalah. ${details.modelAnalisis ? `Gunakan preferensi pengguna ini: "${details.modelAnalisis}".` : ''}`;
+  break;
 
       case 'bab4':
         prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
