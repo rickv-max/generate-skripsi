@@ -1,4 +1,4 @@
-// netlify/functions/generate-thesis.js (VERSI FINAL DENGAN RETRY 503)
+// netlify/functions/generate-thesis.js (VERSI FINAL - COHERE API - TIDAK DIPANGKAS)
 
 const fetch = require('node-fetch');
 
@@ -7,11 +7,11 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  if (!GEMINI_API_KEY) {
+  const COHERE_API_KEY = process.env.COHERE_API_KEY;
+  if (!COHERE_API_KEY) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'GEMINI_API_KEY tidak ditemukan.' }),
+      body: JSON.stringify({ error: 'COHERE_API_KEY tidak ditemukan.' }),
     };
   }
 
@@ -27,7 +27,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // PROMPT DASAR
+    // === PROMPT TIDAK DIUBAH ===
     let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
 Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
 Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
@@ -54,7 +54,8 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
         break;
 
       case 'bab3':
-    prompt += `Struktur BAB III - METODE PENELITIAN:
+        prompt += `Struktur BAB III - METODE PENELITIAN:
+        prompt += `Struktur BAB III - METODE PENELITIAN:
     - Berikan pengantar singkat yang menjelaskan pentingnya bab metodologi ini.
     - Uraikan secara **sangat mendalam** setiap sub-bab berikut, di mana **masing-masing sub-bab harus terdiri dari minimal empat paragraf yang terstruktur dengan baik**:
 
@@ -87,62 +88,46 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
         throw new Error('Chapter tidak valid');
     }
 
+    const apiURL = 'https://api.cohere.ai/v1/chat';
     const requestBody = {
-      contents: [{ parts: [{ text: prompt }] }],
-      safetySettings: [
-        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-      ],
-      generationConfig: {
-        temperature: 0.8,
-        topP: 0.95,
-        maxOutputTokens: 8192
-      }
+      model: "command-r-plus",
+      temperature: 0.7,
+      max_tokens: 3000,
+      chat_history: [],
+      message: prompt
     };
 
-    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-
-    // === RETRY LOGIC UNTUK 503 ===
+    // === RETRY LOGIC ===
     let retries = 3;
     let responseData;
 
     while (retries > 0) {
       const apiResponse = await fetch(apiURL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${COHERE_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(requestBody)
       });
 
+      const status = apiResponse.status;
       responseData = await apiResponse.json();
 
-      if (!responseData.error || responseData.error.code !== 503) break;
+      if (status !== 503 && status !== 429) break;
 
-      console.warn('Model overloaded, mencoba ulang...');
-      await new Promise(res => setTimeout(res, 2000)); // tunggu 2 detik
+      console.warn('Cohere overload / rate limit, retrying...');
+      await new Promise(res => setTimeout(res, 2000));
       retries--;
     }
 
-    if (responseData.error) {
-      throw new Error(`Gemini gagal: ${responseData.error.message}`);
-    }
-
-    if (
-      responseData.candidates &&
-      responseData.candidates.length > 0 &&
-      responseData.candidates[0].content?.parts
-    ) {
-      const generatedText = responseData.candidates[0].content.parts[0].text;
+    if (responseData.text) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ text: generatedText })
+        body: JSON.stringify({ text: responseData.text })
       };
     } else {
-      const reason = responseData.promptFeedback?.blockReason || 
-                     responseData.candidates?.[0]?.finishReason || 
-                     'Unknown reason';
-      throw new Error(`Gemini tidak menghasilkan konten. Alasan: ${reason}`);
+      throw new Error(`Cohere gagal: ${responseData.message || 'Tidak ada teks dihasilkan.'}`);
     }
 
   } catch (error) {
