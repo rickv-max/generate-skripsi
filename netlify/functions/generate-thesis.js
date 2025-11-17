@@ -1,4 +1,5 @@
-// netlify/functions/generate-thesis.js (VERSI FINAL - COHERE API - TIDAK DIPANGKAS)
+// netlify/functions/generate-thesis.js
+// VERSI GEMINI - PROMPT TIDAK DIUBAH
 
 const fetch = require('node-fetch');
 
@@ -7,16 +8,19 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const COHERE_API_KEY = process.env.COHERE_API_KEY;
-  if (!COHERE_API_KEY) {
+  // ▼ Pakai ENV dulu, kalau tidak ada baru fallback ke string manual
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY';
+
+  if (!GEMINI_API_KEY) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'COHERE_API_KEY tidak ditemukan.' }),
+      body: JSON.stringify({ error: 'GEMINI_API_KEY tidak ditemukan.' }),
     };
   }
 
   try {
-    const { topic, problem, chapter, details } = JSON.parse(event.body);
+    // Kasih default {} supaya tidak error kalau details tidak dikirim
+    const { topic, problem, chapter, details = {} } = JSON.parse(event.body);
 
     if (!topic || !problem || !chapter) {
       return {
@@ -27,7 +31,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // === PROMPT TIDAK DIUBAH ===
+    // === PROMPT TIDAK DIUBAH (isi teks sama persis, cuma dipakai ke Gemini) ===
     let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
 Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
 Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
@@ -54,7 +58,7 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
         break;
 
       case 'bab3':
-  prompt += `Struktur BAB III - METODE PENELITIAN:
+        prompt += `Struktur BAB III - METODE PENELITIAN:
 - Berikan pengantar singkat yang menjelaskan pentingnya bab metodologi ini.
 - Uraikan secara sangat mendalam setiap sub-bab berikut, di mana masing-masing sub-bab harus terdiri dari minimal empat paragraf yang terstruktur dengan baik:
 
@@ -75,7 +79,7 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
 
 3.5. Sub-bab Teknik Analisis Data:
   - Uraikan dalam minimal empat paragraf. Jelaskan secara komprehensif bagaimana data yang terkumpul akan dianalisis (misalnya analisis kualitatif). Detailkan langkah-langkah analisisnya (reduksi data, penyajian data, penarikan kesimpulan) dan bagaimana analisis itu akan digunakan untuk menjawab rumusan masalah. ${details.modelAnalisis ? `Gunakan preferensi pengguna ini: "${details.modelAnalisis}".` : ''}`;
-  break;
+        break;
 
       case 'bab4':
         prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
@@ -87,53 +91,83 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
         throw new Error('Chapter tidak valid');
     }
 
-    const apiURL = 'https://api.cohere.ai/v1/chat';
+    // ====== PANGGIL GEMINI API ======
+    const apiURL =
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' +
+      encodeURIComponent(GEMINI_API_KEY);
+
     const requestBody = {
-      model: "command-r-plus",
-      temperature: 0.7,
-      max_tokens: 3000,
-      chat_history: [],
-      message: prompt
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }],
+        },
+      ],
+      // mirip dengan temperature & max_tokens di Cohere
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 3000,
+      },
     };
 
-    // === RETRY LOGIC ===
+    // === RETRY LOGIC (untuk 429 / 503) ===
     let retries = 3;
     let responseData;
+    let status;
 
     while (retries > 0) {
       const apiResponse = await fetch(apiURL, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${COHERE_API_KEY}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
-      const status = apiResponse.status;
+      status = apiResponse.status;
       responseData = await apiResponse.json();
 
       if (status !== 503 && status !== 429) break;
 
-      console.warn('Cohere overload / rate limit, retrying...');
-      await new Promise(res => setTimeout(res, 2000));
+      console.warn('Gemini overload / rate limit, retrying...');
+      await new Promise((res) => setTimeout(res, 2000));
       retries--;
     }
 
-    if (responseData.text) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ text: responseData.text })
-      };
-    } else {
-      throw new Error(`Cohere gagal: ${responseData.message || 'Tidak ada teks dihasilkan.'}`);
+    // Ambil teks dari struktur respons Gemini
+    let generatedText = '';
+
+    if (
+      responseData &&
+      Array.isArray(responseData.candidates) &&
+      responseData.candidates.length > 0
+    ) {
+      const parts = responseData.candidates[0].content?.parts || [];
+      generatedText = parts
+        .map((p) => (typeof p.text === 'string' ? p.text : ''))
+        .join('')
+        .trim();
     }
 
+    if (generatedText) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ text: generatedText }),
+      };
+    } else {
+      throw new Error(
+        `Gemini gagal: ${
+          responseData.error?.message ||
+          responseData.message ||
+          'Tidak ada teks dihasilkan.'
+        }`
+      );
+    }
   } catch (error) {
-    console.error('Terjadi error:', error.message);
+    console.error('Terjadi error:', error.message, error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 };
