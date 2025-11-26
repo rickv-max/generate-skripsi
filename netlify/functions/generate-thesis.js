@@ -9,7 +9,7 @@ exports.handler = async (event) => {
   }
 
   // ▼ Pakai ENV dulu, kalau tidak ada baru fallback ke string manual
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY';
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'IDIDKDy6McRoRyzAeO63B49mW3n4cW7XFqkDbJYS';
 
   if (!GEMINI_API_KEY) {
     return {
@@ -93,7 +93,7 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
 
     // ====== PANGGIL GEMINI API ======
     const apiURL =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' +
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-latest:generateContent?key=' +
       encodeURIComponent(GEMINI_API_KEY);
 
     const requestBody = {
