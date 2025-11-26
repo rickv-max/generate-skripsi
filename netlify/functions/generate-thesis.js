@@ -9,7 +9,7 @@ exports.handler = async (event) => {
   }
 
   // ▼ Pakai ENV dulu, kalau tidak ada baru fallback ke string manual
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'IDIDKDy6McRoRyzAeO63B49mW3n4cW7XFqkDbJYS';
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDtF07XqPbXaXdkwFCU-VuVehRTNZsqKGk';
 
   if (!GEMINI_API_KEY) {
     return {
